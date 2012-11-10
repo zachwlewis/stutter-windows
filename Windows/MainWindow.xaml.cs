@@ -29,6 +29,17 @@ namespace Stutter.Windows
 
 		private Random Randomizer;
 
+		public bool IsTaskListVisible
+		{
+			get { return Settings.Default.IsTaskListVisible; }
+			set
+			{
+				Settings.Default.IsTaskListVisible = value;
+				Settings.Default.Save();
+				TaskListColumnDefinition.Width = value ? new GridLength(160, GridUnitType.Star) : new GridLength(0, GridUnitType.Star);	
+			}
+		}
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -38,6 +49,7 @@ namespace Stutter.Windows
 			Tasks.Add(new StutterTask("Complete the Stutter task list.", "Desc", 0, 0));
 			Tasks.Add(new StutterTask("Create settings window for Stutter.", "Desc", 15, 25));
 			TaskListBox.ItemsSource = Tasks;
+			IsTaskListVisible = IsTaskListVisible;
 			Randomizer = new Random();
 		}
 

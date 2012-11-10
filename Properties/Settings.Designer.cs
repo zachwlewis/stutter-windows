@@ -64,5 +64,17 @@ namespace Stutter.Properties {
                 this["BlockLength"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsTaskListVisible {
+            get {
+                return ((bool)(this["IsTaskListVisible"]));
+            }
+            set {
+                this["IsTaskListVisible"] = value;
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Stutter" Height="350" Width="525" WindowStartupLocation="CenterScreen" SnapsToDevicePixels="True">
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <Style x:Key="TaskListBox" TargetType="{x:Type ListBox}">
             <Setter Property="Background" Value="White"/>
             <Setter Property="BorderBrush" Value="#FFABADB3"/>
@@ -45,22 +46,27 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="160*"/>
-            <ColumnDefinition Width="357*"/>
+            <ColumnDefinition x:Name="TaskListColumnDefinition" Width="160*"/>
+            <ColumnDefinition Width="258*"/>
         </Grid.ColumnDefinitions>
         <Menu VerticalAlignment="Top" Grid.ColumnSpan="2">
             <MenuItem Header="File">
                 <MenuItem x:Name="QuitMenuItem" Header="Quit" HorizontalAlignment="Left" VerticalAlignment="Top" Click="QuitMenuItem_Click"/>
             </MenuItem>
-            <MenuItem Header="Edit">
-                <MenuItem Header="Settings..." HorizontalAlignment="Left" VerticalAlignment="Top" Click="MenuItem_Click_1"/>
+            <MenuItem Header="View">
+                <MenuItem Header="Tasks" IsCheckable="True" IsChecked="{Binding IsTaskListVisible, ElementName=StutterMainWindow}"/>
+            </MenuItem>
+            <MenuItem Header="Tools">
+                <MenuItem Header="Connections..." IsEnabled="False"/>
+                <Separator/>
+                <MenuItem Header="Settings..." Click="MenuItem_Click_1"/>
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem x:Name="AboutMenuItem" Header="About Stutter" HorizontalAlignment="Left" VerticalAlignment="Top" Click="AboutMenuItem_Click"/>
             </MenuItem>
         </Menu>
 
-        <ListBox ItemsSource="{Binding}" x:Name="TaskListBox" Margin="0" Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemTemplate="{DynamicResource TaskDataTemplate}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top"/>
+        <ListBox ItemsSource="{Binding}" x:Name="TaskListBox" Margin="0" Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemTemplate="{DynamicResource TaskDataTemplate}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top" Background="#FFDADADA" BorderBrush="{x:Null}" BorderThickness="0"/>
         <StackPanel Grid.Column="1" Margin="5,2,5,5" Orientation="Vertical" Grid.Row="1">
             <Button x:Name="BeginButton" Margin="5" Click="BeginButton_Click" BorderThickness="0" Padding="0" UseLayoutRounding="True" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                 <Grid>
@@ -71,7 +77,7 @@
 
             <GroupBox Padding="5,10,5,5" UseLayoutRounding="True" Header="Phrase Goal" Margin="0,5">
                 <StackPanel Margin="0" Orientation="Vertical">
-                    <TextBlock x:Name="GoalTextBlock" TextWrapping="Wrap" Text="This is where the user's current goal will be displayed while he is working." FontFamily="Segoe UI Semibold" FontSize="16" Padding="5"/>
+                    <TextBlock x:Name="GoalTextBlock" TextWrapping="Wrap" Text="Click &quot;Begin Phrase&quot; to see your first goal." FontFamily="Segoe UI Semibold" FontSize="16" Padding="5"/>
                 </StackPanel>
             </GroupBox>
 
