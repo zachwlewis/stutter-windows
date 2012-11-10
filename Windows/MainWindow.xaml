@@ -30,7 +30,6 @@
                             <MultiTrigger>
                                 <MultiTrigger.Conditions>
                                     <Condition Property="IsGrouping" Value="True"/>
-                                    <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="False"/>
                                 </MultiTrigger.Conditions>
                                 <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
                             </MultiTrigger>
@@ -54,7 +53,7 @@
                 <MenuItem x:Name="QuitMenuItem" Header="Quit" HorizontalAlignment="Left" VerticalAlignment="Top" Click="QuitMenuItem_Click"/>
             </MenuItem>
             <MenuItem Header="Edit">
-                <MenuItem Header="Options..." HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <MenuItem Header="Settings..." HorizontalAlignment="Left" VerticalAlignment="Top" Click="MenuItem_Click_1"/>
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem x:Name="AboutMenuItem" Header="About Stutter" HorizontalAlignment="Left" VerticalAlignment="Top" Click="AboutMenuItem_Click"/>

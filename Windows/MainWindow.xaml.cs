@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Stutter.Events;
 using Stutter.Core;
+using Stutter.Properties;
 
 namespace Stutter.Windows
 {
@@ -47,7 +48,7 @@ namespace Stutter.Windows
 
 		private void AboutMenuItem_Click(object sender, RoutedEventArgs e)
 		{
-			About dialog = new About();
+			AboutWindow dialog = new AboutWindow();
 			dialog.ShowDialog();
 		}
 
@@ -78,7 +79,7 @@ namespace Stutter.Windows
 		void BeginPhrase()
 		{
 			StutterTask task = Tasks[Randomizer.Next(Tasks.Count)];
-			Phrase = new StutterPhrase(task, 15, 0);
+			Phrase = new StutterPhrase(task, Settings.Default.PhraseLength, 0);
 			Phrase.Complete += Phrase_Complete;
 			Phrase.Tick += Phrase_Tick;
 			Phrase.Start();
@@ -89,6 +90,12 @@ namespace Stutter.Windows
 			Phrase.Complete -= Phrase_Complete;
 			Phrase.Tick -= Phrase_Tick;
 			Phrase = null;
+		}
+
+		private void MenuItem_Click_1(object sender, RoutedEventArgs e)
+		{
+			SettingsWindow dialog = new SettingsWindow();
+			dialog.ShowDialog();
 		}
 	}
 }

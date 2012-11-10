@@ -17,11 +17,11 @@ namespace Stutter.Windows
 	/// <summary>
 	/// Interaction logic for About.xaml
 	/// </summary>
-	public partial class About : Window
+	public partial class AboutWindow : Window
 	{
 		private Stutter.Properties.Settings StutterSettings;
 
-		public About()
+		public AboutWindow()
 		{
 			InitializeComponent();
 			StutterSettings = Stutter.Properties.Settings.Default;

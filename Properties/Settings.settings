@@ -8,5 +8,11 @@
     <Setting Name="COPYRIGHT" Type="System.String" Scope="Application">
       <Value Profile="(Default)">Copyright © 2012</Value>
     </Setting>
+    <Setting Name="PhraseLength" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">25</Value>
+    </Setting>
+    <Setting Name="BlockLength" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

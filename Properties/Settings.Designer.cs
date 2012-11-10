@@ -40,5 +40,29 @@ namespace Stutter.Properties {
                 return ((string)(this["COPYRIGHT"]));
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("25")]
+        public int PhraseLength {
+            get {
+                return ((int)(this["PhraseLength"]));
+            }
+            set {
+                this["PhraseLength"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public int BlockLength {
+            get {
+                return ((int)(this["BlockLength"]));
+            }
+            set {
+                this["BlockLength"] = value;
+            }
+        }
     }
 }
