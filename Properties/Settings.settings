@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Stutter.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="AUTHOR" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Zachary Lewis</Value>
+    </Setting>
+    <Setting Name="COPYRIGHT" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Copyright © 2012</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

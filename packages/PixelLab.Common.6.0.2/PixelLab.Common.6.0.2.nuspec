@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>PixelLab.Common</id>
+    <version>6.0.2</version>
+    <title>PixelLab.Common</title>
+    <authors>Kevin Moore, Robby Ingebretsen, Derek Lakin</authors>
+    <owners>Kevin Moore, Robby Ingebretsen, Derek Lakin</owners>
+    <licenseUrl>http://creativecommons.org/licenses/MIT/</licenseUrl>
+    <projectUrl>https://github.com/thinkpixellab/bot</projectUrl>
+    <iconUrl>http://www.nuget.org/Media/Default/Packages/PixelLab.BOT/1.0.1/logo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A collection of helpers and controls for .NET, WPF and Silverlight.</description>
+    <dependencies>
+      <dependency id="PixelLab.Core" version="6.0.2" />
+      <dependency id="Prism" version="4.1.0.0" />
+    </dependencies>
+  </metadata>
+</package>
