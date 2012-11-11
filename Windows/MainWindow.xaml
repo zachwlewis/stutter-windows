@@ -1,7 +1,7 @@
 ﻿<Window x:Name="StutterMainWindow" x:Class="Stutter.Windows.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Stutter" Height="350" Width="525" WindowStartupLocation="CenterScreen" SnapsToDevicePixels="True">
+        Title="Stutter" Height="350" Width="525" WindowStartupLocation="CenterScreen" SnapsToDevicePixels="True" Closing="StutterMainWindow_Closing">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <Style x:Key="TaskListBox" TargetType="{x:Type ListBox}">
@@ -44,6 +44,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition x:Name="TaskListColumnDefinition" Width="160*"/>
@@ -66,8 +67,8 @@
             </MenuItem>
         </Menu>
 
-        <ListBox ItemsSource="{Binding}" x:Name="TaskListBox" Margin="0" Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemTemplate="{DynamicResource TaskDataTemplate}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top" Background="#FFDADADA" BorderBrush="{x:Null}" BorderThickness="0"/>
-        <StackPanel Grid.Column="1" Margin="5,2,5,5" Orientation="Vertical" Grid.Row="1">
+        <ListBox x:Name="TaskListBox" Margin="0" Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top" Background="#FFDADADA" BorderBrush="{x:Null}" BorderThickness="0" ItemTemplate="{DynamicResource TaskDataTemplate}"/>
+        <StackPanel Grid.Column="1" Margin="5,2,5,5" Orientation="Vertical" Grid.Row="1" Grid.RowSpan="2">
             <Button x:Name="BeginButton" Margin="5" Click="BeginButton_Click" BorderThickness="0" Padding="0" UseLayoutRounding="True" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                 <Grid>
                     <ProgressBar x:Name="PhraseProgressBar" Height="32" Margin="0" BorderThickness="2"/>
@@ -82,6 +83,8 @@
             </GroupBox>
 
         </StackPanel>
+        <Button x:Name="AddTaskButton" Content="New Task" Margin="0" Grid.Row="2" Padding="5" Click="AddTaskButton_Click"/>
+        <TextBox x:Name="TaskEntryTextBox" TextWrapping="Wrap" Text="Enter a task name and press Enter." Grid.Column="1" Margin="0" Grid.Row="2" VerticalContentAlignment="Center" PreviewKeyDown="TaskEntryTextBox_PreviewKeyDown" Visibility="Collapsed"/>
 
     </Grid>
 </Window>

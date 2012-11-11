@@ -1,19 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Stutter.Events;
 using Stutter.Core;
+using Stutter.Events;
 using Stutter.Properties;
 
 namespace Stutter.Windows
@@ -44,10 +34,6 @@ namespace Stutter.Windows
 		{
 			InitializeComponent();
 			Tasks = new List<StutterTask>();
-			Tasks.Add(new StutterTask("Create iconography for Stutter.", "Desc", 10, 5));
-			Tasks.Add(new StutterTask("Set Stutter to deploy via Shimmer.", "Desc", 0, 5));
-			Tasks.Add(new StutterTask("Complete the Stutter task list.", "Desc", 0, 0));
-			Tasks.Add(new StutterTask("Create settings window for Stutter.", "Desc", 15, 25));
 			TaskListBox.ItemsSource = Tasks;
 
 			// TODO: Is this the best way to update this value?
@@ -55,8 +41,43 @@ namespace Stutter.Windows
 
 			Randomizer = new Random();
 		}
+
+		void BeginPhrase()
+		{
+			if (!TaskListBox.HasItems)
+			{
+				GoalTextBlock.Text = "Add some tasks to your list with the Add Task button, then try again.";
+				return;
+			}
+			StutterTask task = Tasks[Randomizer.Next(Tasks.Count)];
+			Phrase = new StutterPhrase(task, Settings.Default.PhraseLength, 0);
+			Phrase.Complete += Phrase_Complete;
+			Phrase.Tick += Phrase_Tick;
+			Phrase.Start();
+			GoalTextBlock.Text = Phrase.Task.ToString();
+			PhraseProgressLabel.Content = Phrase.Duration.ToString(@"mm\:ss") + " Remaining";
+			BeginButton.IsEnabled = false;
+		}
+
+		void EndPhrase()
+		{
+			Phrase.Complete -= Phrase_Complete;
+			Phrase.Tick -= Phrase_Tick;
+			Phrase = null;
+		}
+
+		private void ResetTaskEntryArea()
+		{
+			TaskEntryTextBox.Text = "";
+			TaskEntryTextBox.Visibility = Visibility.Collapsed;
+			TaskListBox.Items.Refresh();
+			AddTaskButton.Content = "Add Task";
+			AddTaskButton.Click -= AddTaskButton_CancelClick;
+			AddTaskButton.Click += AddTaskButton_Click;
+		}
+
 		#region UI Events
-		
+
 		private void QuitMenuItem_Click(object sender, RoutedEventArgs e)
 		{
 			Close();
@@ -70,11 +91,8 @@ namespace Stutter.Windows
 
 		private void BeginButton_Click(object sender, RoutedEventArgs e)
 		{
-			
+
 			BeginPhrase();
-			GoalTextBlock.Text = Phrase.Task.ToString();
-			PhraseProgressLabel.Content = Phrase.Duration.ToString(@"mm\:ss") + " Remaining";
-			BeginButton.IsEnabled = false;
 		}
 
 		void Phrase_Tick(object sender, StutterEventArgs e)
@@ -100,23 +118,39 @@ namespace Stutter.Windows
 			// Force the task list to update in case the user changed the visibility settings.
 			TaskListBox.Items.Refresh();
 		}
+
+		private void TaskEntryTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Enter && TaskEntryTextBox.Text.Length > 0)
+			{
+				Tasks.Add(new StutterTask(TaskEntryTextBox.Text));
+				ResetTaskEntryArea();
+			}
+		}
+
+		private void AddTaskButton_Click(object sender, RoutedEventArgs e)
+		{
+			TaskEntryTextBox.Visibility = Visibility.Visible;
+			TaskEntryTextBox.Focus();
+			TaskEntryTextBox.Text = "Name your new task, then press Enter.";
+			TaskEntryTextBox.SelectAll();
+			AddTaskButton.Content = "Cancel";
+			AddTaskButton.Click -= AddTaskButton_Click;
+			AddTaskButton.Click += AddTaskButton_CancelClick;
+		}
+
+		private void AddTaskButton_CancelClick(object sender, RoutedEventArgs e)
+		{
+			ResetTaskEntryArea();
+		}
+
+		private void StutterMainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			// TODO: Save all tasks to the user's settings.
+			// TODO: If the phrase is more than half over, update the phrase points for the current task.
+			// TODO: Handle task deletion.
+		}
+
 		#endregion
-		void BeginPhrase()
-		{
-			StutterTask task = Tasks[Randomizer.Next(Tasks.Count)];
-			Phrase = new StutterPhrase(task, Settings.Default.PhraseLength, 0);
-			Phrase.Complete += Phrase_Complete;
-			Phrase.Tick += Phrase_Tick;
-			Phrase.Start();
-		}
-
-		void EndPhrase()
-		{
-			Phrase.Complete -= Phrase_Complete;
-			Phrase.Tick -= Phrase_Tick;
-			Phrase = null;
-		}
-
-		
 	}
 }

@@ -9,6 +9,11 @@
 
         <DataTemplate x:Key="TaskDataTemplate">
             <StackPanel Orientation="Vertical" SnapsToDevicePixels="True">
+                <StackPanel.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem x:Name="DeleteMenuItem" Header="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" IsEnabled="false"/>
+                    </ContextMenu>
+                </StackPanel.ContextMenu>
                 <TextBlock Margin="0" TextWrapping="Wrap" Text="{Binding Name}" VerticalAlignment="Stretch" Padding="2" Height="Auto" Width="Auto"/>
                 <ProgressBar Visibility="{Binding IsProgressVisible}" Height="5" Width="Auto" Margin="0" Orientation="Horizontal" Value="{Binding PointValue, Mode=OneWay}" Maximum="{Binding PointMaximum, Mode=OneWay}" BorderThickness="0" BorderBrush="{x:Null}" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" VerticalAlignment="Stretch" Background="{Binding EstimateValueBrush, Mode=OneWay}"/>
                 <StackPanel Visibility="{Binding IsValueVisible}" Margin="0" Orientation="Horizontal" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Right">
