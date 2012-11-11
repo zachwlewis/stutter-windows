@@ -7,50 +7,70 @@
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        <TabControl Margin="10">
+            <TabItem Header="General">
+                <StackPanel Orientation="Vertical" Margin="0">
+                    <GroupBox Header="Timing" Margin="5" Padding="0,5,0,0">
+                        <StackPanel Orientation="Vertical" Margin="0,0,-12,1">
+                            <Grid x:Name="PhraseLengthGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="85"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                <Slider x:Name="PhraseLengthSlider" Margin="5,4" Grid.Column="1" VerticalContentAlignment="Center" TickFrequency="5" SmallChange="1" LargeChange="5" Maximum="60" Minimum="5"/>
+                                <Label Content="Phrase Length" Margin="0" VerticalAlignment="Top"/>
+                                <Grid Grid.Column="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label x:Name="PhraseLengthLabel" Content="{Binding Default.PhraseLength, Mode=OneWay, Source={StaticResource Settings}}" VerticalAlignment="Top" Margin="0" VerticalContentAlignment="Center"/>
+                                    <Label VerticalAlignment="Top" Margin="0" VerticalContentAlignment="Center" Content="min." Grid.Column="1" Padding="0,5,5,5"/>
+                                </Grid>
+                            </Grid>
+                            <Grid x:Name="BlockLengthGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="85"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                <Slider x:Name="BlockLengthSlider" Margin="5,4" Grid.Column="1" VerticalContentAlignment="Center" TickFrequency="5" SmallChange="1" Maximum="15" Minimum="1"/>
+                                <Label Content="Block Length" Margin="0" VerticalAlignment="Top"/>
+                                <Grid Grid.Column="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Label x:Name="BlockLengthLabel" Content="{Binding Default.BlockLength, Source={StaticResource Settings}}" VerticalAlignment="Top" Margin="0" VerticalContentAlignment="Center"/>
+                                    <Label VerticalAlignment="Top" Margin="0" VerticalContentAlignment="Center" Content="min." Grid.Column="1" Padding="0,5,5,5"/>
+                                </Grid>
+                            </Grid>
+                        </StackPanel>
+                    </GroupBox>
+                    <UniformGrid Columns="2" Margin="5">
+                        <CheckBox Content="Play Sounds" Margin="0" IsChecked="{Binding Default.IsSoundEnabled, Source={StaticResource Settings}}"/>
+                        <CheckBox Content="Minimize To System Tray" Margin="0" IsChecked="{Binding IsMinimizedToSystemTray, Source={StaticResource Settings}}"/>
+
+                    </UniformGrid>
+
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Tasks">
+                <StackPanel Orientation="Vertical" Margin="0" Height="175" Width="368">
+                    <UniformGrid Columns="2" Margin="5">
+                        <CheckBox Content="Show Task Points" Margin="0" IsChecked="{Binding Default.IsTaskValueVisible, Source={StaticResource Settings}}"/>
+                        <CheckBox Content="Show Task Progress" Margin="0" IsChecked="{Binding Default.IsTaskProgressVisible, Source={StaticResource Settings}}"/>
+
+                    </UniformGrid>
+
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+
         <StackPanel Margin="0" Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Right">
             <Button x:Name="OKButton" Content="OK" Padding="5" Width="64" Click="OKButton_Click" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10"/>
             <Button x:Name="CancelButton" Content="Cancel" Padding="5" Width="64" Click="CancelButton_Click" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10"/>
-
-        </StackPanel>
-        <StackPanel Orientation="Vertical">
-            <GroupBox Header="Timing" Margin="10" Padding="0,5,0,0">
-                <StackPanel Orientation="Vertical" Margin="0,0,-12,1">
-                    <Grid x:Name="PhraseLengthGrid">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="85"/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="60"/>
-                        </Grid.ColumnDefinitions>
-                        <Slider x:Name="PhraseLengthSlider" Margin="5,4" Grid.Column="1" VerticalContentAlignment="Center" TickFrequency="5" SmallChange="1" LargeChange="5" Maximum="60" Minimum="5"/>
-                        <Label Content="Phrase Length" Margin="0" VerticalAlignment="Top"/>
-                        <Grid Grid.Column="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Label x:Name="PhraseLengthLabel" Content="{Binding Default.PhraseLength, Mode=OneWay, Source={StaticResource Settings}}" VerticalAlignment="Top" Margin="0" VerticalContentAlignment="Center"/>
-                            <Label VerticalAlignment="Top" Margin="0" VerticalContentAlignment="Center" Content="min." Grid.Column="1" Padding="0,5,5,5"/>
-                        </Grid>
-                    </Grid>
-                    <Grid x:Name="BlockLengthGrid">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="85"/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="60"/>
-                        </Grid.ColumnDefinitions>
-                        <Slider x:Name="BlockLengthSlider" Margin="5,4" Grid.Column="1" VerticalContentAlignment="Center" TickFrequency="5" SmallChange="1" Maximum="15" Minimum="1"/>
-                        <Label Content="Block Length" Margin="0" VerticalAlignment="Top"/>
-                        <Grid Grid.Column="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
-                            <Label x:Name="BlockLengthLabel" Content="{Binding Default.BlockLength, Source={StaticResource Settings}}" VerticalAlignment="Top" Margin="0" VerticalContentAlignment="Center"/>
-                            <Label VerticalAlignment="Top" Margin="0" VerticalContentAlignment="Center" Content="min." Grid.Column="1" Padding="0,5,5,5"/>
-                        </Grid>
-                    </Grid>
-                </StackPanel>
-            </GroupBox>
 
         </StackPanel>
 

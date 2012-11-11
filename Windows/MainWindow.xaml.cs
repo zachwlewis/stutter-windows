@@ -49,10 +49,14 @@ namespace Stutter.Windows
 			Tasks.Add(new StutterTask("Complete the Stutter task list.", "Desc", 0, 0));
 			Tasks.Add(new StutterTask("Create settings window for Stutter.", "Desc", 15, 25));
 			TaskListBox.ItemsSource = Tasks;
+
+			// TODO: Is this the best way to update this value?
 			IsTaskListVisible = IsTaskListVisible;
+
 			Randomizer = new Random();
 		}
-
+		#region UI Events
+		
 		private void QuitMenuItem_Click(object sender, RoutedEventArgs e)
 		{
 			Close();
@@ -88,6 +92,15 @@ namespace Stutter.Windows
 			EndPhrase();
 		}
 
+		private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			SettingsWindow dialog = new SettingsWindow();
+			dialog.ShowDialog();
+
+			// Force the task list to update in case the user changed the visibility settings.
+			TaskListBox.Items.Refresh();
+		}
+		#endregion
 		void BeginPhrase()
 		{
 			StutterTask task = Tasks[Randomizer.Next(Tasks.Count)];
@@ -104,10 +117,6 @@ namespace Stutter.Windows
 			Phrase = null;
 		}
 
-		private void MenuItem_Click_1(object sender, RoutedEventArgs e)
-		{
-			SettingsWindow dialog = new SettingsWindow();
-			dialog.ShowDialog();
-		}
+		
 	}
 }

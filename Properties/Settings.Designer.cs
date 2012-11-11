@@ -76,5 +76,53 @@ namespace Stutter.Properties {
                 this["IsTaskListVisible"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsSoundEnabled {
+            get {
+                return ((bool)(this["IsSoundEnabled"]));
+            }
+            set {
+                this["IsSoundEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsMinimizedToSystemTray {
+            get {
+                return ((bool)(this["IsMinimizedToSystemTray"]));
+            }
+            set {
+                this["IsMinimizedToSystemTray"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsTaskValueVisible {
+            get {
+                return ((bool)(this["IsTaskValueVisible"]));
+            }
+            set {
+                this["IsTaskValueVisible"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsTaskProgressVisible {
+            get {
+                return ((bool)(this["IsTaskProgressVisible"]));
+            }
+            set {
+                this["IsTaskProgressVisible"] = value;
+            }
+        }
     }
 }
