@@ -124,5 +124,17 @@ namespace Stutter.Properties {
                 this["IsTaskProgressVisible"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("default.xml")]
+        public string LastTaskListFilename {
+            get {
+                return ((string)(this["LastTaskListFilename"]));
+            }
+            set {
+                this["LastTaskListFilename"] = value;
+            }
+        }
     }
 }

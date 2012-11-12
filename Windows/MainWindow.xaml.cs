@@ -33,7 +33,9 @@ namespace Stutter.Windows
 		public MainWindow()
 		{
 			InitializeComponent();
-			Tasks = new List<StutterTask>();
+
+			// Load our previous task list.
+			Tasks = StutterIO.LoadTaskListFromXML(Settings.Default.LastTaskListFilename);
 			TaskListBox.ItemsSource = Tasks;
 
 			// TODO: Is this the best way to update this value?
@@ -147,6 +149,8 @@ namespace Stutter.Windows
 		private void StutterMainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			// TODO: Save all tasks to the user's settings.
+			StutterIO.SaveTaskListToXML(Tasks, Settings.Default.LastTaskListFilename);
+
 			// TODO: If the phrase is more than half over, update the phrase points for the current task.
 			// TODO: Handle task deletion.
 		}
