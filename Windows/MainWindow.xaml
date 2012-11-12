@@ -52,7 +52,7 @@
         </Grid.ColumnDefinitions>
         <Menu VerticalAlignment="Top" Grid.ColumnSpan="2">
             <MenuItem Header="File">
-                <MenuItem x:Name="QuitMenuItem" Header="Quit" HorizontalAlignment="Left" VerticalAlignment="Top" Click="QuitMenuItem_Click"/>
+                <MenuItem x:Name="QuitMenuItem" Header="Quit" Click="QuitMenuItem_Click"/>
             </MenuItem>
             <MenuItem Header="View">
                 <MenuItem Header="Tasks" IsCheckable="True" IsChecked="{Binding IsTaskListVisible, ElementName=StutterMainWindow}"/>
@@ -63,7 +63,9 @@
                 <MenuItem Header="Settings..." Click="SettingsMenuItem_Click"/>
             </MenuItem>
             <MenuItem Header="Help">
-                <MenuItem x:Name="AboutMenuItem" Header="About Stutter" HorizontalAlignment="Left" VerticalAlignment="Top" Click="AboutMenuItem_Click"/>
+                <MenuItem x:Name="UpdateMenuItem" Header="Check For Updates..." IsEnabled="False"/>
+                <Separator/>
+                <MenuItem x:Name="AboutMenuItem" Header="About Stutter" Click="AboutMenuItem_Click"/>
             </MenuItem>
         </Menu>
 

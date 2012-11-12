@@ -136,5 +136,23 @@ namespace Stutter.Properties {
                 this["LastTaskListFilename"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("StutterSetup.exe")]
+        public string UPDATE_URL {
+            get {
+                return ((string)(this["UPDATE_URL"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Stutter")]
+        public string APPLICATION_NAME {
+            get {
+                return ((string)(this["APPLICATION_NAME"]));
+            }
+        }
     }
 }

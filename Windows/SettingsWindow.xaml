@@ -49,8 +49,8 @@
                         </StackPanel>
                     </GroupBox>
                     <UniformGrid Columns="2" Margin="5">
-                        <CheckBox Content="Play Sounds" Margin="0" IsChecked="{Binding Default.IsSoundEnabled, Source={StaticResource Settings}}"/>
-                        <CheckBox Content="Minimize To System Tray" Margin="0" IsChecked="{Binding IsMinimizedToSystemTray, Source={StaticResource Settings}}"/>
+                        <CheckBox Content="Play Sounds" Margin="0" IsChecked="{Binding Default.IsSoundEnabled, Source={StaticResource Settings}}" IsEnabled="False" Visibility="Hidden"/>
+                        <CheckBox Content="Minimize To System Tray" Margin="0" IsChecked="{Binding IsMinimizedToSystemTray, Source={StaticResource Settings}}" IsEnabled="False"/>
 
                     </UniformGrid>
 

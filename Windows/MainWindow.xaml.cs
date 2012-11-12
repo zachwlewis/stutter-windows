@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
 using Stutter.Core;
-using Stutter.Events;
+using Stutter.Core.Events;
 using Stutter.Properties;
 
 namespace Stutter.Windows
@@ -38,10 +38,22 @@ namespace Stutter.Windows
 			Tasks = StutterIO.LoadTaskListFromXML(Settings.Default.LastTaskListFilename);
 			TaskListBox.ItemsSource = Tasks;
 
+			RefreshGoal();
+
 			// TODO: Is this the best way to update this value?
 			IsTaskListVisible = IsTaskListVisible;
 
 			Randomizer = new Random();
+		}
+
+		private void RefreshGoal()
+		{
+			if (TaskListBox.HasItems)
+			{
+				if (Phrase != null && Phrase.Running) { GoalTextBlock.Text = Phrase.Task.Name; }
+				else { GoalTextBlock.Text = "Click \"Begin Phrase\" to see your next task!"; }
+			}
+			else { GoalTextBlock.Text = "Click \"Add Task\" to add your first task!"; }
 		}
 
 		void BeginPhrase()
@@ -73,6 +85,7 @@ namespace Stutter.Windows
 			TaskEntryTextBox.Text = "";
 			TaskEntryTextBox.Visibility = Visibility.Collapsed;
 			TaskListBox.Items.Refresh();
+			RefreshGoal();
 			AddTaskButton.Content = "Add Task";
 			AddTaskButton.Click -= AddTaskButton_CancelClick;
 			AddTaskButton.Click += AddTaskButton_Click;
@@ -95,6 +108,7 @@ namespace Stutter.Windows
 		{
 
 			BeginPhrase();
+			RefreshGoal();
 		}
 
 		void Phrase_Tick(object sender, StutterEventArgs e)
@@ -110,6 +124,7 @@ namespace Stutter.Windows
 			BeginButton.IsEnabled = true;
 
 			EndPhrase();
+			RefreshGoal();
 		}
 
 		private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
@@ -148,7 +163,6 @@ namespace Stutter.Windows
 
 		private void StutterMainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			// TODO: Save all tasks to the user's settings.
 			StutterIO.SaveTaskListToXML(Tasks, Settings.Default.LastTaskListFilename);
 
 			// TODO: If the phrase is more than half over, update the phrase points for the current task.
