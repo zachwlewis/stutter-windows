@@ -2,14 +2,19 @@
 
 namespace Stutter.Core.Events
 {
-	public class StutterEventArgs : EventArgs
+	public class StutterTimerEvent : EventArgs
 	{
-		public TimeSpan Elapsed;
-		public TimeSpan Total;
+		public StutterTask Task;
+		public readonly TimeSpan Elapsed;
+		public readonly TimeSpan Total;
+		public readonly StutterTimedState State;
 
-		public StutterEventArgs():base()
+		public StutterTimerEvent(StutterTask task, TimeSpan elapsed, TimeSpan total, StutterTimedState state)
 		{
-		
+			Task = task;
+			Elapsed = elapsed;
+			Total = total;
+			State = state;
 		}
 	}
 
@@ -17,6 +22,6 @@ namespace Stutter.Core.Events
 	/// Represents the method that will handle an event that has Stutter data.
 	/// </summary>
 	/// <param name="sender">The source of the event.</param>
-	/// <param name="e">A Stutter.StutterEventArgs that contains event data.</param>
-	public delegate void StutterEventHandler(object sender, StutterEventArgs e);
+	/// <param name="e">A Stutter.StutterTimerEvent that contains event data.</param>
+	public delegate void StutterTimerEventHandler(object sender, StutterTimerEvent e);
 }

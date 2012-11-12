@@ -4,12 +4,13 @@ using System.Windows.Media;
 
 namespace Stutter.Core
 {
-	public class StutterTask
+	public sealed class StutterTask : IComparable<StutterTask>
 	{
-		public string Name { get; protected set; }
-		public string Description { get; protected set; }
+		public string Name { get; internal set; }
+		public string Description { get; internal set; }
 		public uint EstimatedPoints { get; set; }
 		public uint ActualPoints { get; set; }
+		public bool IsComplete { get; set; }
 
 		// TODO: Seperate the display of the class from the implementation of the class.
 		public uint PointValue
@@ -22,7 +23,7 @@ namespace Stutter.Core
 			get { return Math.Max(ActualPoints, EstimatedPoints); }
 		}
 
-		public Visibility IsValueVisible
+		public Visibility IsEstimatedPointsVisible
 		{
 			get
 			{
@@ -35,7 +36,20 @@ namespace Stutter.Core
 			}
 		}
 
-		public Brush EstimateValueBrush
+		public Visibility IsActualPointsVisible
+		{
+			get
+			{
+				if (Stutter.Properties.Settings.Default.IsTaskValueVisible)
+				{
+					if (ActualPoints == 0 && EstimatedPoints == 0) { return Visibility.Collapsed; }
+					else { return Visibility.Visible; }
+				}
+				else { return Visibility.Collapsed; }
+			}
+		}
+
+		public Brush EstimatedPointsBrush
 		{
 			get
 			{
@@ -57,14 +71,30 @@ namespace Stutter.Core
 			}
 		}
 
-		public StutterTask(string name, string description = "", uint estimatedPoints = 0, uint actualPoints = 0)
+		public Brush IsCompleteBrush
+		{
+			get
+			{
+				return IsComplete ? new SolidColorBrush(Colors.PaleGoldenrod) : null;
+			}
+		}
+
+		public StutterTask(string name, string description = "", uint estimatedPoints = 0, uint actualPoints = 0, bool isComplete = false)
 		{
 			Name = name;
 			Description = description;
 			EstimatedPoints = estimatedPoints;
 			ActualPoints = actualPoints;
+			IsComplete = isComplete;
 		}
 
-		public override string ToString() { return Name; }
+		public void ToggleCompletion()
+		{
+			IsComplete = !IsComplete;
+		}
+
+		public override string ToString() { return Name + Description + EstimatedPoints; }
+
+		int IComparable<StutterTask>.CompareTo(StutterTask t) { return IsComplete ? t.IsComplete ? 0 : 1 : t.IsComplete ? -1 : 0; }
 	}
 }

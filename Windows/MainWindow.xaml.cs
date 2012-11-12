@@ -14,7 +14,7 @@ namespace Stutter.Windows
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		public StutterPhrase Phrase;
+		public StutterIteration Iteration;
 
 		public List<StutterTask> Tasks;
 
@@ -51,53 +51,79 @@ namespace Stutter.Windows
 		{
 			if (TaskListBox.HasItems)
 			{
-				if (Phrase != null && Phrase.Running) { GoalTextBlock.Text = Phrase.Task.Name; }
-				else { GoalTextBlock.Text = "Click \"Begin Phrase\" to see your next task!"; }
+				if (Iteration == null || !Iteration.Running) { GoalTextBlock.Text = "Click \"Start Stutter\" to see your next task!"; }
+				else if (Iteration.IterationState == StutterTimedState.Phrase) { GoalTextBlock.Text = Iteration.Task.Name; }
+				else if (Iteration.IterationState == StutterTimedState.Block) { GoalTextBlock.Text = "Take a brief break before the next phrase."; }
 			}
-			else { GoalTextBlock.Text = "Click \"Add Task\" to add your first task!"; }
+			else { GoalTextBlock.Text = "Click \"New Task\" to add your first task!"; }
 		}
 
-		void BeginPhrase()
+		void BeginIteration()
 		{
 			if (!TaskListBox.HasItems)
 			{
-				GoalTextBlock.Text = "Add some tasks to your list with the Add Task button, then try again.";
+				GoalTextBlock.Text = "Add some tasks to your list with the \"New Task\" button, then try again.";
 				return;
 			}
-			StutterTask task = Tasks[Randomizer.Next(Tasks.Count)];
-			Phrase = new StutterPhrase(task, Settings.Default.PhraseLength, 0);
-			Phrase.Complete += Phrase_Complete;
-			Phrase.Tick += Phrase_Tick;
-			Phrase.Start();
-			GoalTextBlock.Text = Phrase.Task.ToString();
-			PhraseProgressLabel.Content = Phrase.Duration.ToString(@"mm\:ss") + " Remaining";
-			BeginButton.IsEnabled = false;
+
+			// Make a list of all incomplete tasks.
+			List<StutterTask> temp = new List<StutterTask>();
+
+			foreach(StutterTask st in Tasks)
+			{
+				if (!st.IsComplete) { temp.Add(st); }
+			}
+
+			// If there are no incomplete tasks, fuss.
+			if (temp.Count < 1)
+			{
+				GoalTextBlock.Text = "Add some tasks to your list with the \"New Task\" button, then try again.";
+				return;
+			}
+
+			StutterTask task = temp[Randomizer.Next(temp.Count)];
+			Iteration = new StutterIteration(task);
+			Iteration.Complete += Iteration_Complete;
+			Iteration.Tick += Iteration_Tick;
+			Iteration.BeginPhrase();
+			GoalTextBlock.Text = Iteration.Task.Name;
+			PhraseProgressLabel.Content = Iteration.Duration.ToString(@"mm\:ss") + " Remaining";
+			BeginButton.Content = "Stop Stutter";
 		}
 
-		void EndPhrase()
+		void EndIteration()
 		{
-			Phrase.Complete -= Phrase_Complete;
-			Phrase.Tick -= Phrase_Tick;
-			Phrase = null;
+			Iteration.Stop();
+			Iteration.Complete -= Iteration_Complete;
+			Iteration.Tick -= Iteration_Tick;
+			PhraseProgressLabel.Content = "";
+			PhraseProgressBar.Value = 0;
+			BeginButton.Content = "Start Stutter";
+			RefreshGoal();
+		}
+
+		void StartNextIteration()
+		{
+			Iteration.Complete -= Iteration_Complete;
+			Iteration.Tick -= Iteration_Tick;
+			Iteration = null;
+			BeginIteration();
 		}
 
 		private void ResetTaskEntryArea()
 		{
 			TaskEntryTextBox.Text = "";
 			TaskEntryTextBox.Visibility = Visibility.Collapsed;
-			TaskListBox.Items.Refresh();
+			RefreshTaskList();
 			RefreshGoal();
 			AddTaskButton.Content = "Add Task";
 			AddTaskButton.Click -= AddTaskButton_CancelClick;
 			AddTaskButton.Click += AddTaskButton_Click;
 		}
 
-		private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
+		private void RefreshTaskList()
 		{
-			MenuItem item = (MenuItem)e.Source;
-			StutterTask task = (StutterTask)item.DataContext;
-
-			Tasks.Remove(task);
+			Tasks.Sort();
 			TaskListBox.Items.Refresh();
 		}
 
@@ -116,25 +142,55 @@ namespace Stutter.Windows
 
 		private void BeginButton_Click(object sender, RoutedEventArgs e)
 		{
-
-			BeginPhrase();
-			RefreshGoal();
+			if (Iteration != null && Iteration.Running) { EndIteration(); }
+			else { BeginIteration(); }
 		}
 
-		void Phrase_Tick(object sender, StutterEventArgs e)
+		private void Iteration_Tick(object sender, StutterTimerEvent e)
 		{
 			PhraseProgressBar.Value = PhraseProgressBar.Maximum * (e.Elapsed.TotalSeconds / e.Total.TotalSeconds);
-			PhraseProgressLabel.Content = e.Total.Subtract(e.Elapsed).ToString(@"mm\:ss") + " Remaining";
+			PhraseProgressLabel.Content = e.State.ToString() + " — " + e.Total.Subtract(e.Elapsed).ToString(@"mm\:ss") + " Remaining";
 		}
 
-		void Phrase_Complete(object sender, StutterEventArgs e)
+		private void Iteration_Complete(object sender, StutterTimerEvent e)
 		{
 			PhraseProgressBar.Value = PhraseProgressBar.Maximum;
-			PhraseProgressLabel.Content = "Phrase Complete";
-			BeginButton.IsEnabled = true;
 
-			EndPhrase();
+			System.Media.SoundPlayer player;
+
+			switch (e.State)
+			{
+				case StutterTimedState.Block:
+					// Handle iteration completion.
+					PhraseProgressLabel.Content = "Iteration Complete";
+					TryPlaySound(Properties.Resources.StartWork);
+
+					StartNextIteration();
+					break;
+				case StutterTimedState.Phrase:
+					// Handle phrase completion.
+					// TODO: Reverse fill direction and stuff.
+					TryPlaySound(Properties.Resources.StopWork);
+
+					if (e.Task != null) { e.Task.ActualPoints++; }
+
+					Iteration.BeginBlock();
+					break;
+				default:
+					break;
+			}
+
 			RefreshGoal();
+		}
+
+		private void TryPlaySound(System.IO.UnmanagedMemoryStream soundResource)
+		{
+			if (Settings.Default.IsSoundEnabled)
+			{
+				System.Media.SoundPlayer player;
+				player = new System.Media.SoundPlayer(soundResource);
+				player.Play();
+			}
 		}
 
 		private void SettingsMenuItem_Click(object sender, RoutedEventArgs e)
@@ -143,7 +199,7 @@ namespace Stutter.Windows
 			dialog.ShowDialog();
 
 			// Force the task list to update in case the user changed the visibility settings.
-			TaskListBox.Items.Refresh();
+			RefreshTaskList();
 		}
 
 		private void TaskEntryTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -176,10 +232,34 @@ namespace Stutter.Windows
 			StutterIO.SaveTaskListToXML(Tasks, Settings.Default.LastTaskListFilename);
 
 			// TODO: If the phrase is more than half over, update the phrase points for the current task.
-			// TODO: Handle task deletion.
+		}
+		
+		private void MarkCompleteMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem item = (MenuItem)e.Source;
+			StutterTask task = (StutterTask)item.DataContext;
+
+			task.ToggleCompletion();
+			RefreshTaskList();
+		}
+
+		private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem item = (MenuItem)e.Source;
+			StutterTask task = (StutterTask)item.DataContext;
+
+			// If the iteration is currently on a phrase and the user deletes the current task,
+			// stop the iteration to prevent null errors when updating the task.
+			if (Iteration != null && Iteration.Task == task && Iteration.Running && Iteration.IterationState == StutterTimedState.Phrase) { EndIteration(); }
+
+			Tasks.Remove(task);
+			
+			RefreshTaskList();
 		}
 
 		#endregion
+
+		
 
 		
 	}

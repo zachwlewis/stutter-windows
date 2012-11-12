@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{424F7895-63A0-4C49-9B95-70C3D4B258BC}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Stutter</RootNamespace>
     <AssemblyName>Stutter</AssemblyName>
@@ -33,7 +33,7 @@
     <PublisherName>The Game Studio</PublisherName>
     <MinimumRequiredVersion>12.11.12.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationRevision>8</ApplicationRevision>
     <ApplicationVersion>12.11.12.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -189,7 +189,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Events\StutterEvent.cs" />
-    <Compile Include="Core\StutterPhrase.cs" />
+    <Compile Include="Core\StutterIteration.cs" />
     <Compile Include="Core\StutterTask.cs" />
     <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -246,7 +246,12 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\StartWork.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\StopWork.wav" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

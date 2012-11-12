@@ -59,5 +59,23 @@ namespace Stutter.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream StartWork {
+            get {
+                return ResourceManager.GetStream("StartWork", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.IO.UnmanagedMemoryStream similar to System.IO.MemoryStream.
+        /// </summary>
+        internal static System.IO.UnmanagedMemoryStream StopWork {
+            get {
+                return ResourceManager.GetStream("StopWork", resourceCulture);
+            }
+        }
     }
 }

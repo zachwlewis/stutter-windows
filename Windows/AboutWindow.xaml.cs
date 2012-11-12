@@ -27,7 +27,7 @@ namespace Stutter.Windows
 			StutterSettings = Stutter.Properties.Settings.Default;
 
 			CopyrightLabel.Content = StutterSettings.COPYRIGHT + " " + StutterSettings.AUTHOR;
-			ApplicationLabel.Text = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name.ToString() +" " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+			ApplicationLabel.Text = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name.ToString() +" " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(4);
 
 		}
 

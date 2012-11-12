@@ -3,20 +3,23 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Stutter" Height="350" Width="525" WindowStartupLocation="CenterScreen" SnapsToDevicePixels="True" Closing="StutterMainWindow_Closing">
     <Window.Resources>
+
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         
         <DataTemplate x:Key="TaskDataTemplate">
-            <StackPanel Orientation="Vertical" SnapsToDevicePixels="True">
+            <StackPanel Orientation="Vertical" SnapsToDevicePixels="True" Background="{Binding IsCompleteBrush, Mode=OneWay}">
                 <StackPanel.ContextMenu>
                     <ContextMenu>
+                        <MenuItem x:Name="MarkCompleteMenuItem" Header="Complete" IsCheckable="True"  IsChecked="{Binding IsComplete, Mode=OneWay}" Click="MarkCompleteMenuItem_Click"/>
+                        <Separator/>
                         <MenuItem x:Name="DeleteMenuItem" Header="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Click="DeleteMenuItem_Click" />
                     </ContextMenu>
                 </StackPanel.ContextMenu>
                 <TextBlock Margin="0" TextWrapping="Wrap" Text="{Binding Name}" VerticalAlignment="Stretch" Padding="2" Height="Auto" Width="Auto"/>
-                <ProgressBar Visibility="{Binding IsProgressVisible}" Height="5" Width="Auto" Margin="0" Orientation="Horizontal" Value="{Binding PointValue, Mode=OneWay}" Maximum="{Binding PointMaximum, Mode=OneWay}" BorderThickness="0" BorderBrush="{x:Null}" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" VerticalAlignment="Stretch" Background="{Binding EstimateValueBrush, Mode=OneWay}"/>
-                <StackPanel Visibility="{Binding IsValueVisible}" Margin="0" Orientation="Horizontal" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Right">
-                    <Label x:Name="ActualPointsLabel" Content="{Binding ActualPoints}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="Segoe UI Semibold" FontSize="10" Padding="0" Height="Auto" Margin="2,0,0,0" Foreground="#FF06B025" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
-                    <Label x:Name="EstimatedPointsLabel" Content="{Binding EstimatedPoints}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="Segoe UI Semibold" FontSize="10" Padding="0" Height="Auto" Width="Auto" Margin="2,0,0,0" Foreground="{Binding EstimateValueBrush, Mode=OneWay}" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+                <ProgressBar Visibility="{Binding IsProgressVisible}" Height="5" Width="Auto" Margin="0" Orientation="Horizontal" Value="{Binding PointValue, Mode=OneWay}" Maximum="{Binding PointMaximum, Mode=OneWay}" BorderThickness="0" BorderBrush="{x:Null}" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" VerticalAlignment="Stretch" Background="{Binding EstimatedPointsBrush, Mode=OneWay}"/>
+                <StackPanel Margin="0" Orientation="Horizontal" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Right">
+                    <Label x:Name="ActualPointsLabel"  Visibility="{Binding IsActualPointsVisible}" Content="{Binding ActualPoints}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="Segoe UI Semibold" FontSize="10" Padding="0" Height="Auto" Margin="2,0,0,0" Foreground="#FF06B025" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+                    <Label x:Name="EstimatedPointsLabel"  Visibility="{Binding IsEstimatedPointsVisible}" Content="{Binding EstimatedPoints}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="Segoe UI Semibold" FontSize="10" Padding="0" Height="Auto" Width="Auto" Margin="2,0,0,0" Foreground="{Binding EstimatedPointsBrush, Mode=OneWay}" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
                 </StackPanel>
             </StackPanel>
         </DataTemplate>
@@ -88,16 +91,19 @@
 
         <ListBox x:Name="TaskListBox" Margin="0" Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top" Background="#FFDADADA" BorderBrush="{x:Null}" BorderThickness="0" ItemTemplate="{DynamicResource TaskDataTemplate}"/>
         <StackPanel Grid.Column="1" Margin="5,2,5,5" Orientation="Vertical" Grid.Row="1" Grid.RowSpan="2">
-            <Button x:Name="BeginButton" Margin="5" Click="BeginButton_Click" BorderThickness="0" Padding="0" UseLayoutRounding="True" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                <Grid>
+
+            <StackPanel Margin="5" Orientation="Vertical">
+                <Grid Margin="0">
                     <ProgressBar x:Name="PhraseProgressBar" Height="32" Margin="0" BorderThickness="2"/>
-                    <Label x:Name="PhraseProgressLabel" Content="Begin Phrase" Margin="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <Label x:Name="PhraseProgressLabel" Content="" Margin="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
                 </Grid>
-            </Button>
+                <Button x:Name="BeginButton" Margin="0,5,0,0" Click="BeginButton_Click" BorderThickness="1" Padding="5" UseLayoutRounding="True" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch" Content="Start Stutter" Width="100" HorizontalAlignment="Left"/>
+
+            </StackPanel>
 
             <GroupBox Padding="5,10,5,5" UseLayoutRounding="True" Header="Phrase Goal" Margin="0,5">
                 <StackPanel Margin="0" Orientation="Vertical">
-                    <TextBlock x:Name="GoalTextBlock" TextWrapping="Wrap" Text="Click &quot;Begin Phrase&quot; to see your first goal." FontFamily="Segoe UI Semibold" FontSize="16" Padding="5"/>
+                    <TextBlock x:Name="GoalTextBlock" TextWrapping="Wrap" Text="Click &quot;Start Stutter&quot; to see your first goal." FontFamily="Segoe UI Semibold" FontSize="16" Padding="5"/>
                 </StackPanel>
             </GroupBox>
 
