@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Stutter.Core;
 using Stutter.Core.Events;
 using Stutter.Properties;
+using System.Windows.Controls;
 
 namespace Stutter.Windows
 {
@@ -91,6 +92,15 @@ namespace Stutter.Windows
 			AddTaskButton.Click += AddTaskButton_Click;
 		}
 
+		private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			MenuItem item = (MenuItem)e.Source;
+			StutterTask task = (StutterTask)item.DataContext;
+
+			Tasks.Remove(task);
+			TaskListBox.Items.Refresh();
+		}
+
 		#region UI Events
 
 		private void QuitMenuItem_Click(object sender, RoutedEventArgs e)
@@ -170,5 +180,7 @@ namespace Stutter.Windows
 		}
 
 		#endregion
+
+		
 	}
 }

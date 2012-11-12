@@ -30,10 +30,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="LastTaskListFilename" Type="System.String" Scope="User">
-      <Value Profile="(Default)">default.xml</Value>
-    </Setting>
-    <Setting Name="UPDATE_URL" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">StutterSetup.exe</Value>
+      <Value Profile="(Default)">default.sss</Value>
     </Setting>
     <Setting Name="APPLICATION_NAME" Type="System.String" Scope="Application">
       <Value Profile="(Default)">Stutter</Value>

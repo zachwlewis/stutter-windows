@@ -127,22 +127,13 @@ namespace Stutter.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("default.xml")]
+        [global::System.Configuration.DefaultSettingValueAttribute("default.sss")]
         public string LastTaskListFilename {
             get {
                 return ((string)(this["LastTaskListFilename"]));
             }
             set {
                 this["LastTaskListFilename"] = value;
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("StutterSetup.exe")]
-        public string UPDATE_URL {
-            get {
-                return ((string)(this["UPDATE_URL"]));
             }
         }
         
