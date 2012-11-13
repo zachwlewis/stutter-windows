@@ -6,6 +6,7 @@ using Stutter.Core;
 using Stutter.Core.Events;
 using Stutter.Properties;
 using System.Windows.Controls;
+using System.Deployment.Application;
 
 namespace Stutter.Windows
 {
@@ -125,6 +126,36 @@ namespace Stutter.Windows
 		{
 			Tasks.Sort();
 			TaskListBox.Items.Refresh();
+		}
+
+		private void CheckForUpdates()
+		{
+			ApplicationDeployment deploy;
+
+			try
+			{
+				deploy = ApplicationDeployment.CurrentDeployment;
+			}
+			catch
+			{
+				MessageBox.Show(this, "Sorry, but Stutter can't check for updates at this time.", "No Updates Available", MessageBoxButton.OK);
+				return;
+			}
+
+			if (deploy.CheckForUpdate())
+			{
+				UpdateCheckInfo update = deploy.CheckForDetailedUpdate();
+
+				MessageBoxResult result = MessageBox.Show(this, "Update to Stutter " + update.AvailableVersion.ToString(4) + "?\n\nYou're currently running Stutter " + deploy.CurrentVersion.ToString(4) + ".", "Update Stutter", MessageBoxButton.OKCancel);
+				if (result == MessageBoxResult.OK)
+				{
+					deploy.Update();
+				}
+			}
+			else
+			{
+				MessageBox.Show(this, "You're currently running the latest version of Stutter (" + deploy.CurrentVersion.ToString(4) + ").", "No Updates Available", MessageBoxButton.OK);
+			}
 		}
 
 		#region UI Events
@@ -257,7 +288,11 @@ namespace Stutter.Windows
 			RefreshTaskList();
 		}
 
+		private void UpdateMenuItem_Click(object sender, RoutedEventArgs e) { CheckForUpdates(); }
+
 		#endregion
+
+		
 
 		
 

@@ -31,9 +31,9 @@
     <TargetCulture>en-US</TargetCulture>
     <ProductName>Stutter</ProductName>
     <PublisherName>The Game Studio</PublisherName>
-    <MinimumRequiredVersion>12.11.13.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>12.11.13.2</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>12.11.13.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -157,6 +157,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
