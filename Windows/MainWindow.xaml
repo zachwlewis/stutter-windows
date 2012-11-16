@@ -1,21 +1,29 @@
-﻿<Window x:Name="StutterMainWindow" x:Class="Stutter.Windows.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Stutter" Height="350" Width="525" WindowStartupLocation="CenterScreen" SnapsToDevicePixels="True" Closing="StutterMainWindow_Closing" Icon="/Stutter;component/stutter.ico">
+﻿<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+    x:Name="StutterMainWindow"
+    x:Class="Stutter.Windows.MainWindow"
+    Title="Stutter"
+    WindowStartupLocation="CenterScreen"
+    SnapsToDevicePixels="True"
+    Closing="StutterMainWindow_Closing"
+    Icon="/Stutter;component/stutter.ico"
+    ResizeMode="NoResize"
+    SizeToContent="WidthAndHeight">
+    
     <Window.Resources>
 
-        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        
         <DataTemplate x:Key="TaskDataTemplate">
-            <StackPanel Orientation="Vertical" SnapsToDevicePixels="True" Background="{Binding IsCompleteBrush, Mode=OneWay}">
+            <StackPanel Opacity="{Binding IsCompletedAlpha}" Orientation="Vertical" SnapsToDevicePixels="True">
                 <StackPanel.ContextMenu>
                     <ContextMenu>
                         <MenuItem x:Name="MarkCompleteMenuItem" Header="Complete" IsCheckable="True"  IsChecked="{Binding IsComplete, Mode=OneWay}" Click="MarkCompleteMenuItem_Click"/>
                         <Separator/>
-                        <MenuItem x:Name="DeleteMenuItem" Header="Delete" HorizontalAlignment="Left" VerticalAlignment="Top" Click="DeleteMenuItem_Click" />
+                        <MenuItem x:Name="DeleteMenuItem" Header="Delete" Click="DeleteMenuItem_Click" />
                     </ContextMenu>
                 </StackPanel.ContextMenu>
-                <TextBlock Margin="0" TextWrapping="Wrap" Text="{Binding Name}" VerticalAlignment="Stretch" Padding="2" Height="Auto" Width="Auto"/>
+                <TextBlock  Margin="0" TextWrapping="Wrap" Text="{Binding Name}" VerticalAlignment="Stretch" Padding="5" Height="Auto" Width="Auto" />
                 <ProgressBar Visibility="{Binding IsProgressVisible}" Height="5" Width="Auto" Margin="0" Orientation="Horizontal" Value="{Binding PointValue, Mode=OneWay}" Maximum="{Binding PointMaximum, Mode=OneWay}" BorderThickness="0" BorderBrush="{x:Null}" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" VerticalAlignment="Stretch" Background="{Binding EstimatedPointsBrush, Mode=OneWay}"/>
                 <StackPanel Margin="0" Orientation="Horizontal" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Right">
                     <Label x:Name="ActualPointsLabel"  Visibility="{Binding IsActualPointsVisible}" Content="{Binding ActualPoints}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="Segoe UI Semibold" FontSize="10" Padding="0" Height="Auto" Margin="2,0,0,0" Foreground="#FF06B025" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
@@ -24,75 +32,60 @@
             </StackPanel>
         </DataTemplate>
         
-        <Style x:Key="TaskListBox" TargetType="{x:Type ListBox}">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#FFABADB3"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
-            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
-            <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
-            <Setter Property="ScrollViewer.PanningMode" Value="Both"/>
-            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ListBox}">
-                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="1" SnapsToDevicePixels="True">
-                            <ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
-                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                            </ScrollViewer>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Background" TargetName="Bd" Value="White"/>
-                                <Setter Property="BorderBrush" TargetName="Bd" Value="#FFD9D9D9"/>
-                            </Trigger>
-                            <MultiTrigger>
-                                <MultiTrigger.Conditions>
-                                    <Condition Property="IsGrouping" Value="True"/>
-                                </MultiTrigger.Conditions>
-                                <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
-                            </MultiTrigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <LinearGradientBrush x:Key="TextBoxBorder" EndPoint="0,20" MappingMode="Absolute" StartPoint="0,0">
+            <GradientStop Color="#ABADB3" Offset="0.05"/>
+            <GradientStop Color="#E2E3EA" Offset="0.07"/>
+            <GradientStop Color="#E3E9EF" Offset="1"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="TopShadowGradient" EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FFDADADA" Offset="0"/>
+            <GradientStop Color="#FFF1F1F1" Offset="1"/>
+            <GradientStop Color="#FFF1F1F1" Offset="0.04"/>
+        </LinearGradientBrush>
+
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition x:Name="TaskListColumnDefinition" Width="160*"/>
-            <ColumnDefinition Width="258*"/>
+            <ColumnDefinition x:Name="TaskListColumnDefinition" Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <Menu VerticalAlignment="Top" Grid.ColumnSpan="2">
-            <MenuItem Header="File">
+        <Menu Grid.ColumnSpan="2" Height="24" BorderBrush="#FFC1C1C1" BorderThickness="0,0,0,1">
+            <MenuItem Header="File" Height="24">
                 <MenuItem x:Name="QuitMenuItem" Header="Quit" Click="QuitMenuItem_Click"/>
             </MenuItem>
-            <MenuItem Header="View">
+            <MenuItem Header="View" Height="24">
                 <MenuItem Header="Tasks" IsCheckable="True" IsChecked="{Binding IsTaskListVisible, ElementName=StutterMainWindow}"/>
             </MenuItem>
-            <MenuItem Header="Tools">
+            <MenuItem Header="Tools" Height="24">
                 <MenuItem Header="Connections..." IsEnabled="False"/>
                 <Separator/>
                 <MenuItem Header="Settings..." Click="SettingsMenuItem_Click"/>
             </MenuItem>
-            <MenuItem Header="Help">
+            <MenuItem Header="Help" Height="24">
                 <MenuItem x:Name="UpdateMenuItem" Header="Check For Updates..." Click="UpdateMenuItem_Click"/>
                 <Separator/>
                 <MenuItem x:Name="AboutMenuItem" Header="About Stutter" Click="AboutMenuItem_Click"/>
             </MenuItem>
         </Menu>
+        <StackPanel Orientation="Vertical" Grid.Row="1" Width="200">
 
-        <ListBox x:Name="TaskListBox" Margin="0" Grid.Row="1" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top" Background="#FFDADADA" BorderBrush="{x:Null}" BorderThickness="0" ItemTemplate="{DynamicResource TaskDataTemplate}"/>
-        <StackPanel Grid.Column="1" Margin="5,2,5,5" Orientation="Vertical" Grid.Row="1" Grid.RowSpan="2">
+            <ListBox x:Name="TaskListBox" Margin="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top" BorderBrush="#FF707070" BorderThickness="0,0,1,0" ItemTemplate="{DynamicResource TaskDataTemplate}" MinHeight="276"/>
+            <Button x:Name="AddTaskButton" Content="New Task" Margin="0" Padding="0" Click="AddTaskButton_Click" BorderThickness="0,1,1,0" Height="26"/>
+        </StackPanel>
+        <StackPanel Grid.Column="1" Margin="0" Grid.Row="1" Width="324">
+            <StackPanel.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Gainsboro" Offset="0"/>
+                    <GradientStop Color="WhiteSmoke" Offset="0.032"/>
+                </LinearGradientBrush>
+            </StackPanel.Background>
 
-            <StackPanel Margin="5" Orientation="Vertical">
+            <StackPanel Margin="5,20,5,5" Orientation="Vertical">
                 <Grid Margin="0">
                     <ProgressBar x:Name="PhraseProgressBar" Height="32" Margin="0" BorderThickness="2"/>
                     <Label x:Name="PhraseProgressLabel" Content="" Margin="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
@@ -103,13 +96,27 @@
 
             <GroupBox Padding="5,10,5,5" UseLayoutRounding="True" Header="Phrase Goal" Margin="0,5">
                 <StackPanel Margin="0" Orientation="Vertical">
-                    <TextBlock x:Name="GoalTextBlock" TextWrapping="Wrap" Text="Click &quot;Start Stutter&quot; to see your first goal." FontFamily="Segoe UI Semibold" FontSize="16" Padding="5"/>
+                    <TextBlock x:Name="GoalTextBlock" TextWrapping="Wrap" Text="Task Name" FontFamily="Segoe UI Semibold" FontSize="16" Padding="5"/>
+                    <TextBlock x:Name="GoalDescriptionBlock" TextWrapping="Wrap" Text="Task description" Padding="5" Visibility="Collapsed"/>
                 </StackPanel>
             </GroupBox>
 
         </StackPanel>
-        <Button x:Name="AddTaskButton" Content="New Task" Margin="0" Grid.Row="2" Padding="5" Click="AddTaskButton_Click"/>
-        <TextBox x:Name="TaskEntryTextBox" TextWrapping="Wrap" Text="Enter a task name and press Enter." Grid.Column="1" Margin="0" Grid.Row="2" VerticalContentAlignment="Center" PreviewKeyDown="TaskEntryTextBox_PreviewKeyDown" Visibility="Collapsed"/>
+        <Border x:Name="NewTaskPanel" Grid.Row="2" Grid.ColumnSpan="2" BorderThickness="0,1,0,0" BorderBrush="#FF707070" Margin="0" Visibility="Collapsed" Background="{DynamicResource TopShadowGradient}">
+            <StackPanel Orientation="Vertical" Margin="5">
+                <Label Content="Task Name" Padding="2"/>
+
+                <TextBox x:Name="TaskNameTextBox" TextWrapping="Wrap" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="5" SpellCheck.IsEnabled="True" KeyUp="TaskNameTextBox_KeyUp"/>
+                <Label Content="Task Description" Padding="2"/>
+                <TextBox x:Name="TaskDescriptionTextBox" TextWrapping="Wrap" VerticalContentAlignment="Center" VerticalAlignment="Top" Padding="5" SpellCheck.IsEnabled="True" Width="514"/>
+                <Grid Height="48" Margin="0">
+                    <Label Content="Phrase Estimate" Padding="2" Margin="0,0,0,28" VerticalAlignment="Center" HorizontalAlignment="Left" Width="100"/>
+                    <TextBox x:Name="TaskEstimateTextBox" TextWrapping="Wrap" VerticalContentAlignment="Center" VerticalAlignment="Center" Padding="5" SpellCheck.IsEnabled="True" Width="100" Margin="0,20,0,0" HorizontalAlignment="Left" Text="0" TextAlignment="Right"/>
+                    <Button x:Name="CreateTaskButton" Content="Create Task" Margin="0" Padding="0" BorderThickness="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Height="42" Width="222" Click="CreateTaskButton_Click" IsEnabled="False"/>
+                </Grid>
+            </StackPanel>
+
+        </Border>
 
     </Grid>
 </Window>

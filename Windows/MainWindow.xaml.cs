@@ -15,11 +15,25 @@ namespace Stutter.Windows
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		/// <summary>
+		/// The iteration manager for the application.
+		/// </summary>
 		public StutterIteration Iteration;
 
+		/// <summary>
+		/// The user's task list.
+		/// </summary>
 		public List<StutterTask> Tasks;
 
 		private Random Randomizer;
+
+		//public static readonly DependencyProperty TaskNameRequirementProperty = DependencyProperty.Register("NewTaskName", typeof(string), typeof(MainWindow), new UIPropertyMetadata("Unnamed Task"));
+		private string _ntn = "";
+		public string NewTaskName
+		{
+			get { return _ntn; }
+			set { _ntn = value; }
+		}
 
 		public bool IsTaskListVisible
 		{
@@ -113,11 +127,14 @@ namespace Stutter.Windows
 
 		private void ResetTaskEntryArea()
 		{
-			TaskEntryTextBox.Text = "";
-			TaskEntryTextBox.Visibility = Visibility.Collapsed;
+			TaskNameTextBox.Text = "";
+			TaskDescriptionTextBox.Text = "";
+			TaskEstimateTextBox.Text = "0";
+			NewTaskPanel.Visibility = Visibility.Collapsed;
 			RefreshTaskList();
 			RefreshGoal();
 			AddTaskButton.Content = "Add Task";
+			CreateTaskButton.IsEnabled = false;
 			AddTaskButton.Click -= AddTaskButton_CancelClick;
 			AddTaskButton.Click += AddTaskButton_Click;
 		}
@@ -150,6 +167,8 @@ namespace Stutter.Windows
 				if (result == MessageBoxResult.OK)
 				{
 					deploy.Update();
+					System.Windows.Forms.Application.Restart();
+					Application.Current.Shutdown();
 				}
 			}
 			else
@@ -233,21 +252,10 @@ namespace Stutter.Windows
 			RefreshTaskList();
 		}
 
-		private void TaskEntryTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.Key == Key.Enter && TaskEntryTextBox.Text.Length > 0)
-			{
-				Tasks.Add(new StutterTask(TaskEntryTextBox.Text));
-				ResetTaskEntryArea();
-			}
-		}
-
 		private void AddTaskButton_Click(object sender, RoutedEventArgs e)
 		{
-			TaskEntryTextBox.Visibility = Visibility.Visible;
-			TaskEntryTextBox.Focus();
-			TaskEntryTextBox.Text = "Name your new task, then press Enter.";
-			TaskEntryTextBox.SelectAll();
+			NewTaskPanel.Visibility = Visibility.Visible;
+			TaskNameTextBox.Focus();
 			AddTaskButton.Content = "Cancel";
 			AddTaskButton.Click -= AddTaskButton_Click;
 			AddTaskButton.Click += AddTaskButton_CancelClick;
@@ -290,11 +298,27 @@ namespace Stutter.Windows
 
 		private void UpdateMenuItem_Click(object sender, RoutedEventArgs e) { CheckForUpdates(); }
 
+		private void CreateTaskButton_Click(object sender, RoutedEventArgs e)
+		{
+			uint estimate = 0;
+			try { estimate = (uint)Convert.ToInt32(TaskEstimateTextBox.Text);}
+			catch {estimate = 0;}
+			Tasks.Add(new StutterTask(TaskNameTextBox.Text, TaskDescriptionTextBox.Text, estimate));
+			ResetTaskEntryArea();
+		}
+
+		
 		#endregion
 
-		
+		private void TaskNameTextBox_TextInput(object sender, TextCompositionEventArgs e)
+		{
+			
+		}
 
-		
+		private void TaskNameTextBox_KeyUp(object sender, KeyEventArgs e)
+		{
+			CreateTaskButton.IsEnabled = !String.IsNullOrWhiteSpace(TaskNameTextBox.Text);
+		}
 
 		
 	}

@@ -49,6 +49,14 @@ namespace Stutter.Core
 			}
 		}
 
+		public double IsCompletedAlpha
+		{
+			get
+			{
+				return IsComplete ? 0.5d : 1.0d;
+			}
+		}
+
 		public Brush EstimatedPointsBrush
 		{
 			get
