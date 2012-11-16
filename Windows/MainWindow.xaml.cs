@@ -295,8 +295,6 @@ namespace Stutter.Windows
 
 		#endregion
 
-		
-
 		#region UI Events
 
 		private void QuitMenuItem_Click(object sender, RoutedEventArgs e)
@@ -410,6 +408,8 @@ namespace Stutter.Windows
 			// If the iteration is currently on a phrase and the user deletes the current task,
 			// stop the iteration to prevent null errors when updating the task.
 			if (Iteration != null && Iteration.Task == task && Iteration.Running && Iteration.IterationState == StutterTimedState.Phrase) { EndIteration(); }
+
+			if (_tmm.Mode == TaskMode.Edit && _tmm.Task == task) { _tmm.Mode = TaskMode.Closed; }
 
 			Tasks.Remove(task);
 
