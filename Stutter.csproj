@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{424F7895-63A0-4C49-9B95-70C3D4B258BC}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Stutter</RootNamespace>
     <AssemblyName>Stutter</AssemblyName>
@@ -31,9 +31,9 @@
     <TargetCulture>en-US</TargetCulture>
     <ProductName>Stutter</ProductName>
     <PublisherName>The Game Studio</PublisherName>
-    <MinimumRequiredVersion>12.11.16.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>12.11.16.1</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>12.11.16.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
