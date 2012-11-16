@@ -15,10 +15,11 @@
     <Window.Resources>
 
         <DataTemplate x:Key="TaskDataTemplate">
-            <StackPanel Opacity="{Binding IsCompletedAlpha}" Orientation="Vertical" SnapsToDevicePixels="True">
+            <StackPanel x:Name="TaskListContainer" Opacity="{Binding IsCompletedAlpha}" Orientation="Vertical" SnapsToDevicePixels="True" MouseDown="TaskListContainer_MouseDown">
                 <StackPanel.ContextMenu>
                     <ContextMenu>
                         <MenuItem x:Name="MarkCompleteMenuItem" Header="Complete" IsCheckable="True"  IsChecked="{Binding IsComplete, Mode=OneWay}" Click="MarkCompleteMenuItem_Click"/>
+                        <MenuItem x:Name="EditTaskMenuItem" Header="Edit..." Click="EditTaskMenuItem_Click"/>
                         <Separator/>
                         <MenuItem x:Name="DeleteMenuItem" Header="Delete" Click="DeleteMenuItem_Click" />
                     </ContextMenu>
@@ -74,7 +75,7 @@
         </Menu>
         <StackPanel Orientation="Vertical" Grid.Row="1" Width="200">
 
-            <ListBox x:Name="TaskListBox" Margin="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top" BorderBrush="#FF707070" BorderThickness="0,0,1,0" ItemTemplate="{DynamicResource TaskDataTemplate}" MinHeight="276"/>
+            <ListBox x:Name="TaskListBox" Margin="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top" BorderBrush="#FF707070" BorderThickness="0,0,1,0" ItemTemplate="{DynamicResource TaskDataTemplate}" MinHeight="276" MaxHeight="300"/>
             <Button x:Name="AddTaskButton" Content="New Task" Margin="0" Padding="0" Click="AddTaskButton_Click" BorderThickness="0,1,1,0" Height="26"/>
         </StackPanel>
         <StackPanel Grid.Column="1" Margin="0" Grid.Row="1" Width="324">
@@ -97,7 +98,7 @@
             <GroupBox Padding="5,10,5,5" UseLayoutRounding="True" Header="Phrase Goal" Margin="0,5">
                 <StackPanel Margin="0" Orientation="Vertical">
                     <TextBlock x:Name="GoalTextBlock" TextWrapping="Wrap" Text="Task Name" FontFamily="Segoe UI Semibold" FontSize="16" Padding="5"/>
-                    <TextBlock x:Name="GoalDescriptionBlock" TextWrapping="Wrap" Text="Task description" Padding="5" Visibility="Collapsed"/>
+                    <TextBlock x:Name="GoalDescriptionBlock" TextWrapping="Wrap" Text="Task description" Padding="5"/>
                 </StackPanel>
             </GroupBox>
 

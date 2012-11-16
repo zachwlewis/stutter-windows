@@ -6,8 +6,8 @@ namespace Stutter.Core
 {
 	public sealed class StutterTask : IComparable<StutterTask>
 	{
-		public string Name { get; internal set; }
-		public string Description { get; internal set; }
+		public string Name { get; set; }
+		public string Description { get; set; }
 		public uint EstimatedPoints { get; set; }
 		public uint ActualPoints { get; set; }
 		public bool IsComplete { get; set; }

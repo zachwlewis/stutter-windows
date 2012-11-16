@@ -7,6 +7,7 @@ using Stutter.Core.Events;
 using Stutter.Properties;
 using System.Windows.Controls;
 using System.Deployment.Application;
+using Stutter.Windows.Events;
 
 namespace Stutter.Windows
 {
@@ -20,6 +21,8 @@ namespace Stutter.Windows
 		/// </summary>
 		public StutterIteration Iteration;
 
+		private TaskModeManager _tmm;
+
 		/// <summary>
 		/// The user's task list.
 		/// </summary>
@@ -27,13 +30,7 @@ namespace Stutter.Windows
 
 		private Random Randomizer;
 
-		//public static readonly DependencyProperty TaskNameRequirementProperty = DependencyProperty.Register("NewTaskName", typeof(string), typeof(MainWindow), new UIPropertyMetadata("Unnamed Task"));
-		private string _ntn = "";
-		public string NewTaskName
-		{
-			get { return _ntn; }
-			set { _ntn = value; }
-		}
+		private static StutterTask _editingTask;
 
 		public bool IsTaskListVisible
 		{
@@ -59,6 +56,9 @@ namespace Stutter.Windows
 			// TODO: Is this the best way to update this value?
 			IsTaskListVisible = IsTaskListVisible;
 
+			_tmm = new TaskModeManager(TaskMode.Closed);
+			_tmm.Changed += TaskMode_Changed;
+
 			Randomizer = new Random();
 		}
 
@@ -66,18 +66,46 @@ namespace Stutter.Windows
 		{
 			if (TaskListBox.HasItems)
 			{
-				if (Iteration == null || !Iteration.Running) { GoalTextBlock.Text = "Click \"Start Stutter\" to see your next task!"; }
-				else if (Iteration.IterationState == StutterTimedState.Phrase) { GoalTextBlock.Text = Iteration.Task.Name; }
-				else if (Iteration.IterationState == StutterTimedState.Block) { GoalTextBlock.Text = "Take a brief break before the next phrase."; }
+				if (Iteration == null || !Iteration.Running)
+				{
+					GoalTextBlock.Text = "Click \"Start Stutter\" to see your next task!";
+					GoalDescriptionBlock.Text = "To keep you on your toes, any incomplete task could be next.";
+				}
+				else if (Iteration.IterationState == StutterTimedState.Phrase)
+				{
+					GoalTextBlock.Text = Iteration.Task.Name;
+					if (String.IsNullOrWhiteSpace(Iteration.Task.Description))
+					{
+						GoalDescriptionBlock.Visibility = System.Windows.Visibility.Collapsed;
+						GoalDescriptionBlock.Text = ""; 
+					}
+					else
+					{
+						GoalDescriptionBlock.Visibility = System.Windows.Visibility.Visible;
+						GoalDescriptionBlock.Text = Iteration.Task.Description;
+					}
+
+				}
+				else if (Iteration.IterationState == StutterTimedState.Block)
+				{
+					GoalTextBlock.Text = "Take a brief break before the next phrase.";
+					GoalDescriptionBlock.Text = "Make sure to mark a task as complete if you completed it during this phrase. Just double-click on the task to mark it complete.";
+				}
 			}
-			else { GoalTextBlock.Text = "Click \"New Task\" to add your first task!"; }
+			else {
+				GoalTextBlock.Text = "Click \"New Task\" to add your first task!";
+				GoalDescriptionBlock.Text = "Be sure to give your tasks clear, concise names. Leave the detail for the description.";
+			}
 		}
+
+		#region Iteration Handling
 
 		void BeginIteration()
 		{
 			if (!TaskListBox.HasItems)
 			{
 				GoalTextBlock.Text = "Add some tasks to your list with the \"New Task\" button, then try again.";
+				GoalDescriptionBlock.Text = "Be sure to give your tasks clear, concise names. Leave the detail for the description.";
 				return;
 			}
 
@@ -93,6 +121,7 @@ namespace Stutter.Windows
 			if (temp.Count < 1)
 			{
 				GoalTextBlock.Text = "Add some tasks to your list with the \"New Task\" button, then try again.";
+				GoalDescriptionBlock.Text = "Remember, completed tasks won't be selected during a phrase.";
 				return;
 			}
 
@@ -101,7 +130,7 @@ namespace Stutter.Windows
 			Iteration.Complete += Iteration_Complete;
 			Iteration.Tick += Iteration_Tick;
 			Iteration.BeginPhrase();
-			GoalTextBlock.Text = Iteration.Task.Name;
+			RefreshGoal();
 			PhraseProgressLabel.Content = Iteration.Duration.ToString(@"mm\:ss") + " Remaining";
 			BeginButton.Content = "Stop Stutter";
 		}
@@ -125,19 +154,7 @@ namespace Stutter.Windows
 			BeginIteration();
 		}
 
-		private void ResetTaskEntryArea()
-		{
-			TaskNameTextBox.Text = "";
-			TaskDescriptionTextBox.Text = "";
-			TaskEstimateTextBox.Text = "0";
-			NewTaskPanel.Visibility = Visibility.Collapsed;
-			RefreshTaskList();
-			RefreshGoal();
-			AddTaskButton.Content = "Add Task";
-			CreateTaskButton.IsEnabled = false;
-			AddTaskButton.Click -= AddTaskButton_CancelClick;
-			AddTaskButton.Click += AddTaskButton_Click;
-		}
+		#endregion
 
 		private void RefreshTaskList()
 		{
@@ -176,6 +193,109 @@ namespace Stutter.Windows
 				MessageBox.Show(this, "You're currently running the latest version of Stutter (" + deploy.CurrentVersion.ToString(4) + ").", "No Updates Available", MessageBoxButton.OK);
 			}
 		}
+
+		#region Task Entry Area Events
+
+		private void AddTaskButton_Click(object sender, RoutedEventArgs e)
+		{
+			switch (_tmm.Mode)
+			{
+				case TaskMode.Closed:
+					// Show the new task panel and set up for adding a task.
+					_tmm.Mode = TaskMode.Create;
+					break;
+
+				default:
+					// We just want to cancel everything.
+					_tmm.Mode = TaskMode.Closed;
+					break;
+			}
+		}
+
+		private void CreateTaskButton_Click(object sender, RoutedEventArgs e)
+		{
+			uint estimate = 0;
+			try { estimate = (uint)Convert.ToInt32(TaskEstimateTextBox.Text); }
+			catch { estimate = 0; }
+
+			if (_tmm.Mode == TaskMode.Create) { Tasks.Add(new StutterTask(TaskNameTextBox.Text, TaskDescriptionTextBox.Text, estimate)); }
+			else if (_tmm.Mode == TaskMode.Edit)
+			{
+				_tmm.Task.Name = TaskNameTextBox.Text;
+				_tmm.Task.Description = TaskDescriptionTextBox.Text;
+				_tmm.Task.EstimatedPoints = estimate;
+			}
+
+			// Close the task drawer.
+			_tmm.Mode = TaskMode.Closed;
+		}
+
+		private void TaskNameTextBox_KeyUp(object sender, KeyEventArgs e)
+		{
+			CreateTaskButton.IsEnabled = !String.IsNullOrWhiteSpace(TaskNameTextBox.Text);
+		}
+
+		private void CloseTaskArea()
+		{
+			NewTaskPanel.Visibility = Visibility.Collapsed;
+			AddTaskButton.Content = "Add Task";
+
+			RefreshTaskList();
+			RefreshGoal();
+		}
+
+		private void OpenTaskAreaForCreation()
+		{
+			// Show the new task panel and set up for adding a task.
+			NewTaskPanel.Visibility = Visibility.Visible;
+			TaskNameTextBox.Focus();
+			TaskNameTextBox.Text = "";
+			TaskDescriptionTextBox.Text = "";
+			TaskEstimateTextBox.Text = "";
+			AddTaskButton.Content = "Cancel";
+			CreateTaskButton.Content = "Create Task";
+			CreateTaskButton.IsEnabled = false;
+		}
+
+		private void OpenTaskAreaForEditing()
+		{
+			NewTaskPanel.Visibility = Visibility.Visible;
+
+			// 1.
+			CreateTaskButton.Content = "Edit Task";
+			AddTaskButton.Content = "Cancel";
+
+			// 2.
+			TaskNameTextBox.Text = _tmm.Task.Name;
+			TaskDescriptionTextBox.Text = _tmm.Task.Description;
+			TaskEstimateTextBox.Text = _tmm.Task.EstimatedPoints.ToString();
+			
+			// TODO: Provide a field to edit the actual points.
+
+			CreateTaskButton.IsEnabled = true;
+		}
+
+		private void TaskMode_Changed(object sender, TaskModeEventArgs e)
+		{
+			switch (e.Mode)
+			{
+				case TaskMode.Closed:
+					CloseTaskArea();
+					break;
+				case TaskMode.Create:
+					OpenTaskAreaForCreation();
+					break;
+				case TaskMode.Edit:
+					OpenTaskAreaForEditing();
+					break;
+				default:
+					break;
+			}
+		}
+
+		#endregion
+
+		
 
 		#region UI Events
 
@@ -252,27 +372,17 @@ namespace Stutter.Windows
 			RefreshTaskList();
 		}
 
-		private void AddTaskButton_Click(object sender, RoutedEventArgs e)
-		{
-			NewTaskPanel.Visibility = Visibility.Visible;
-			TaskNameTextBox.Focus();
-			AddTaskButton.Content = "Cancel";
-			AddTaskButton.Click -= AddTaskButton_Click;
-			AddTaskButton.Click += AddTaskButton_CancelClick;
-		}
-
-		private void AddTaskButton_CancelClick(object sender, RoutedEventArgs e)
-		{
-			ResetTaskEntryArea();
-		}
-
 		private void StutterMainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			StutterIO.SaveTaskListToXML(Tasks, Settings.Default.LastTaskListFilename);
 
 			// TODO: If the phrase is more than half over, update the phrase points for the current task.
 		}
+
+		private void UpdateMenuItem_Click(object sender, RoutedEventArgs e) { CheckForUpdates(); }
 		
+		#region ListBoxItem Events
+
 		private void MarkCompleteMenuItem_Click(object sender, RoutedEventArgs e)
 		{
 			MenuItem item = (MenuItem)e.Source;
@@ -280,6 +390,16 @@ namespace Stutter.Windows
 
 			task.ToggleCompletion();
 			RefreshTaskList();
+		}
+		
+		private void EditTaskMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			// Get the task to edit.
+			MenuItem item = (MenuItem)e.Source;
+			StutterTask task = (StutterTask)item.DataContext;
+
+			_tmm.Task = task;
+			_tmm.Mode = TaskMode.Edit;
 		}
 
 		private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
@@ -292,34 +412,25 @@ namespace Stutter.Windows
 			if (Iteration != null && Iteration.Task == task && Iteration.Running && Iteration.IterationState == StutterTimedState.Phrase) { EndIteration(); }
 
 			Tasks.Remove(task);
-			
+
 			RefreshTaskList();
 		}
 
-		private void UpdateMenuItem_Click(object sender, RoutedEventArgs e) { CheckForUpdates(); }
-
-		private void CreateTaskButton_Click(object sender, RoutedEventArgs e)
+		private void TaskListContainer_MouseDown(object sender, MouseButtonEventArgs e)
 		{
-			uint estimate = 0;
-			try { estimate = (uint)Convert.ToInt32(TaskEstimateTextBox.Text);}
-			catch {estimate = 0;}
-			Tasks.Add(new StutterTask(TaskNameTextBox.Text, TaskDescriptionTextBox.Text, estimate));
-			ResetTaskEntryArea();
+			if (e.ClickCount == 2 && e.ChangedButton == MouseButton.Left)
+			{
+				// The user double-clicked on this task. Mark it as complete.
+				StackPanel sp = (StackPanel)sender;
+				StutterTask task = (StutterTask)sp.DataContext;
+				task.ToggleCompletion();
+				RefreshTaskList();
+			}
 		}
 
-		
 		#endregion
 
-		private void TaskNameTextBox_TextInput(object sender, TextCompositionEventArgs e)
-		{
-			
-		}
+		#endregion
 
-		private void TaskNameTextBox_KeyUp(object sender, KeyEventArgs e)
-		{
-			CreateTaskButton.IsEnabled = !String.IsNullOrWhiteSpace(TaskNameTextBox.Text);
-		}
-
-		
 	}
 }
