@@ -182,6 +182,7 @@
     <Compile Include="Windows\Commands\StutterCommand.cs" />
     <Compile Include="Windows\Converters.cs" />
     <Compile Include="Windows\Events\TaskMode.cs" />
+    <Compile Include="Windows\MinimizeToTray.cs" />
     <Compile Include="Windows\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>

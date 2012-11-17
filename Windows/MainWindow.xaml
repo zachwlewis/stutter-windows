@@ -28,7 +28,7 @@
 						<MenuItem x:Name="DeleteMenuItem" Header="Delete" Click="DeleteMenuItem_Click" />
 					</ContextMenu>
 				</StackPanel.ContextMenu>
-				<TextBlock  Margin="0" TextWrapping="Wrap" Text="{Binding Name}" VerticalAlignment="Stretch" Padding="5" Height="Auto" Width="Auto" />
+				<TextBlock Margin="0" TextWrapping="Wrap" Text="{Binding Name}" VerticalAlignment="Stretch" Padding="5" Height="Auto" Width="Auto" />
 				<ProgressBar Visibility="{Binding IsProgressVisible}" Height="5" Width="Auto" Margin="0" Orientation="Horizontal" Value="{Binding PointValue, Mode=OneWay}" Maximum="{Binding PointMaximum, Mode=OneWay}" BorderThickness="0" BorderBrush="{x:Null}" VerticalContentAlignment="Top" HorizontalContentAlignment="Left" VerticalAlignment="Stretch" Background="{Binding EstimatedPointsBrush, Mode=OneWay}"/>
 				<StackPanel Margin="0" Orientation="Horizontal" Width="Auto" VerticalAlignment="Center" HorizontalAlignment="Right">
 					<Label x:Name="ActualPointsLabel"  Visibility="{Binding IsActualPointsVisible}" Content="{Binding ActualPoints}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" FontFamily="Segoe UI Semibold" FontSize="10" Padding="0" Height="Auto" Margin="2,0,0,0" Foreground="#FF06B025" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
@@ -83,7 +83,8 @@
 				<MenuItem x:Name="QuitMenuItem" Header="Quit" Click="QuitMenuItem_Click"/>
 			</MenuItem>
 			<MenuItem Header="View" Height="24">
-				<MenuItem x:Name="TaskViewMenuItem" Header="Tasks" IsEnabled="{Binding Path=IsTaskAreaClosed, ElementName=StutterMainWindow}" IsCheckable="True" IsChecked="{Binding Path=IsTaskListVisible, FallbackValue=Settings.Default.IsTaskListVisible, ElementName=StutterMainWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+				<MenuItem x:Name="TaskListMenuItem" Header="Task List" IsEnabled="{Binding Path=IsTaskAreaClosed, ElementName=StutterMainWindow}" IsCheckable="True" IsChecked="{Binding Path=IsTaskListVisible, FallbackValue=Settings.Default.IsTaskListVisible, ElementName=StutterMainWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+				<MenuItem x:Name="CompletedTasksMenuItem" Header="Completed Tasks" IsCheckable="True" IsChecked="{Binding Path=AreCompletedTasksVisible, ElementName=StutterMainWindow, FallbackValue=Settings.Default.AreCompletedTasksVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"/>
 			</MenuItem>
 			<MenuItem Header="Tools" Height="24">
 				<MenuItem Header="Connections..." IsEnabled="False"/>

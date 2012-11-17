@@ -92,12 +92,12 @@ namespace Stutter.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IsMinimizedToSystemTray {
+        public bool DoesHideOnMinimize {
             get {
-                return ((bool)(this["IsMinimizedToSystemTray"]));
+                return ((bool)(this["DoesHideOnMinimize"]));
             }
             set {
-                this["IsMinimizedToSystemTray"] = value;
+                this["DoesHideOnMinimize"] = value;
             }
         }
         
@@ -143,6 +143,18 @@ namespace Stutter.Properties {
         public string APPLICATION_NAME {
             get {
                 return ((string)(this["APPLICATION_NAME"]));
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AreCompletedTasksVisible {
+            get {
+                return ((bool)(this["AreCompletedTasksVisible"]));
+            }
+            set {
+                this["AreCompletedTasksVisible"] = value;
             }
         }
     }

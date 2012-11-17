@@ -25,6 +25,7 @@ namespace Stutter.Windows
 		/// <summary>The user's task list.</summary>
 		public List<StutterTask> Tasks;
 
+		/// <summary>Is the task list visible?</summary>
 		public bool IsTaskListVisible
 		{
 			get { return Settings.Default.IsTaskListVisible || _tmm.Mode != TaskMode.Closed; }
@@ -36,6 +37,19 @@ namespace Stutter.Windows
 			}
 		}
 
+		/// <summary>Are completed tasks visibile in the task list?</summary>
+		public bool AreCompletedTasksVisible
+		{
+			get { return Settings.Default.AreCompletedTasksVisible; }
+			set
+			{
+				Settings.Default.AreCompletedTasksVisible = value;
+				Settings.Default.Save();
+				OnPropertyChanged("AreCompletedTasksVisible");
+			}
+		}
+
+		/// <summary>Is the task creation/edit area closed?</summary>
 		public bool IsTaskAreaClosed
 		{
 			get { return _tmm.Mode == TaskMode.Closed; }
@@ -50,6 +64,18 @@ namespace Stutter.Windows
 		private TaskModeManager _tmm = new TaskModeManager(TaskMode.Closed);
 		private Random _random;
 
+		private bool _doesHideOnMinimize;
+		public bool DoesHideOnMinimize
+		{
+			get { return _doesHideOnMinimize; }
+			set
+			{
+				_doesHideOnMinimize = value;
+				if (value) { MinimizeToTray.Enable(this); }
+				else { MinimizeToTray.Disable(this); }
+			}
+		}
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -61,12 +87,30 @@ namespace Stutter.Windows
 			RefreshGoal();
 
 			// TODO: Is this the best way to update this value?
-			TaskViewMenuItem.IsChecked = Settings.Default.IsTaskListVisible;
+			TaskListMenuItem.IsChecked = Settings.Default.IsTaskListVisible;
 			OnPropertyChanged("IsTaskListVisible");
 
 			_tmm.Changed += TaskMode_Changed;
 
 			_random = new Random();
+
+			Settings.Default.SettingsLoaded += SettingsLoaded;
+			Settings.Default.SettingsSaving += SettingsSaving;
+
+			// Handle minimization toggling.
+			DoesHideOnMinimize = Settings.Default.DoesHideOnMinimize;
+		}
+
+		void SettingsLoaded(object sender, System.Configuration.SettingsLoadedEventArgs e)
+		{
+			// Update anything based on our new settings.
+			DoesHideOnMinimize = Settings.Default.DoesHideOnMinimize;
+		}
+
+		void SettingsSaving(object sender, CancelEventArgs e)
+		{
+			// Update anything based on our new settings.
+			DoesHideOnMinimize = Settings.Default.DoesHideOnMinimize;
 		}
 
 		private void RefreshGoal()
@@ -456,4 +500,6 @@ namespace Stutter.Windows
 
 		#endregion
 	}
+
+	
 }

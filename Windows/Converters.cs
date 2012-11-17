@@ -11,14 +11,14 @@ using Stutter.Windows.Events;
 
 namespace Stutter.Windows
 {
+	/// <summary>Converts from a bool to the visibility of the task list.</summary>
 	public class BoolToTaskListVisibilityConverter : IValueConverter
 	{
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
 		{
 			Nullable<bool> isVisible = value as Nullable<bool>;
-			Console.WriteLine(isVisible);
-			if (isVisible.HasValue && isVisible.Value) { Console.WriteLine("Visible"); return Visibility.Visible; }
-			else { Console.WriteLine("Collapsed"); return Visibility.Collapsed; }
+			if (isVisible.HasValue && isVisible.Value) { return Visibility.Visible; }
+			else { return Visibility.Collapsed; }
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
