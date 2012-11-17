@@ -31,9 +31,9 @@
     <TargetCulture>en-US</TargetCulture>
     <ProductName>Stutter</ProductName>
     <PublisherName>The Game Studio</PublisherName>
-    <MinimumRequiredVersion>12.11.16.1</MinimumRequiredVersion>
+    <MinimumRequiredVersion>12.11.16.3</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationRevision>4</ApplicationRevision>
     <ApplicationVersion>12.11.16.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -180,6 +180,7 @@
     </ApplicationDefinition>
     <Compile Include="Core\StutterIO.cs" />
     <Compile Include="Windows\Commands\StutterCommand.cs" />
+    <Compile Include="Windows\Converters.cs" />
     <Compile Include="Windows\Events\TaskMode.cs" />
     <Compile Include="Windows\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>

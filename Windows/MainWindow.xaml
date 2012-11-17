@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
     xmlns:commands="clr-namespace:Stutter.Windows.Commands"
+	xmlns:local="clr-namespace:Stutter.Windows"
     x:Name="StutterMainWindow"
     x:Class="Stutter.Windows.MainWindow"
     Title="Stutter"
@@ -10,11 +11,14 @@
     SnapsToDevicePixels="True"
     Closing="StutterMainWindow_Closing"
     Icon="/Stutter;component/stutter.ico"
-    ResizeMode="NoResize"
+    ResizeMode="CanMinimize"
     SizeToContent="WidthAndHeight">
 
 	<Window.Resources>
-		<DataTemplate x:Key="TaskDataTemplate">
+
+		<local:BoolToTaskListVisibilityConverter x:Key="BoolToTaskListVisibilityConverter" />
+		
+		 <DataTemplate x:Key="TaskDataTemplate">
 			<StackPanel x:Name="TaskListContainer" Opacity="{Binding IsCompletedAlpha}" Orientation="Vertical" SnapsToDevicePixels="True" MouseDown="TaskListContainer_MouseDown">
 				<StackPanel.ContextMenu>
 					<ContextMenu>
@@ -79,7 +83,7 @@
 				<MenuItem x:Name="QuitMenuItem" Header="Quit" Click="QuitMenuItem_Click"/>
 			</MenuItem>
 			<MenuItem Header="View" Height="24">
-				<MenuItem Header="Tasks" IsCheckable="True" IsChecked="{Binding IsTaskListVisible, ElementName=StutterMainWindow}"/>
+				<MenuItem x:Name="TaskViewMenuItem" Header="Tasks" IsEnabled="{Binding Path=IsTaskAreaClosed, ElementName=StutterMainWindow}" IsCheckable="True" IsChecked="{Binding Path=IsTaskListVisible, FallbackValue=Settings.Default.IsTaskListVisible, ElementName=StutterMainWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 			</MenuItem>
 			<MenuItem Header="Tools" Height="24">
 				<MenuItem Header="Connections..." IsEnabled="False"/>
@@ -92,7 +96,8 @@
 				<MenuItem x:Name="AboutMenuItem" Header="About Stutter" Click="AboutMenuItem_Click"/>
 			</MenuItem>
 		</Menu>
-		<StackPanel Orientation="Vertical" Grid.Row="1" Width="200">
+		
+		<StackPanel x:Name="TaskListStackPane" Orientation="Vertical" Grid.Row="1" Width="200" Visibility="{Binding Path=IsTaskListVisible, Converter={StaticResource BoolToTaskListVisibilityConverter}, ElementName=StutterMainWindow}" >
 
 			<ListBox x:Name="TaskListBox" Margin="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top" BorderBrush="#FF707070" BorderThickness="0,0,1,0" ItemTemplate="{DynamicResource TaskDataTemplate}" MinHeight="276" MaxHeight="300"/>
 			<Button x:Name="AddTaskButton" Content="New Task" Margin="0" Padding="0" Command="{x:Static commands:StutterCommand.AddTaskCommand}" BorderThickness="0,1,1,0" Height="26"/>

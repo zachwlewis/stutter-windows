@@ -8,40 +8,47 @@ using Stutter.Core;
 using Stutter.Core.Events;
 using Stutter.Properties;
 using Stutter.Windows.Events;
+using System.ComponentModel;
 
 namespace Stutter.Windows
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
-	public partial class MainWindow : Window
+	public partial class MainWindow : Window, INotifyPropertyChanged
 	{
-		/// <summary>
-		/// The iteration manager for the application.
-		/// </summary>
+		/// <summary>The iteration manager for the application.</summary>
 		public StutterIteration Iteration;
 
-		private TaskModeManager _tmm = new TaskModeManager(TaskMode.Closed);
+		public event PropertyChangedEventHandler PropertyChanged;
 
-		/// <summary>
-		/// The user's task list.
-		/// </summary>
+		/// <summary>The user's task list.</summary>
 		public List<StutterTask> Tasks;
-
-		private Random Randomizer;
-
-		private static StutterTask _editingTask;
 
 		public bool IsTaskListVisible
 		{
-			get { return Settings.Default.IsTaskListVisible; }
+			get { return Settings.Default.IsTaskListVisible || _tmm.Mode != TaskMode.Closed; }
 			set
 			{
 				Settings.Default.IsTaskListVisible = value;
 				Settings.Default.Save();
-				TaskListColumnDefinition.Width = value ? new GridLength(160, GridUnitType.Star) : new GridLength(0, GridUnitType.Star);	
+				OnPropertyChanged("IsTaskListVisible");
 			}
 		}
+
+		public bool IsTaskAreaClosed
+		{
+			get { return _tmm.Mode == TaskMode.Closed; }
+		}
+
+		private void OnPropertyChanged(string name)
+		{
+			PropertyChangedEventHandler handler = PropertyChanged;
+			if (handler != null) { handler(this, new PropertyChangedEventArgs(name)); }
+		}
+
+		private TaskModeManager _tmm = new TaskModeManager(TaskMode.Closed);
+		private Random _random;
 
 		public MainWindow()
 		{
@@ -54,11 +61,12 @@ namespace Stutter.Windows
 			RefreshGoal();
 
 			// TODO: Is this the best way to update this value?
-			IsTaskListVisible = IsTaskListVisible;
+			TaskViewMenuItem.IsChecked = Settings.Default.IsTaskListVisible;
+			OnPropertyChanged("IsTaskListVisible");
 
 			_tmm.Changed += TaskMode_Changed;
 
-			Randomizer = new Random();
+			_random = new Random();
 		}
 
 		private void RefreshGoal()
@@ -124,7 +132,7 @@ namespace Stutter.Windows
 				return;
 			}
 
-			StutterTask task = temp[Randomizer.Next(temp.Count)];
+			StutterTask task = temp[_random.Next(temp.Count)];
 			Iteration = new StutterIteration(task);
 			Iteration.Complete += Iteration_Complete;
 			Iteration.Tick += Iteration_Tick;
@@ -291,6 +299,9 @@ namespace Stutter.Windows
 					break;
 			}
 
+			OnPropertyChanged("IsTaskListVisible");
+			OnPropertyChanged("IsTaskAreaClosed");
+
 			CancelTaskButton.Visibility = (e.Mode != TaskMode.Closed) ? Visibility.Visible : Visibility.Collapsed;
 			AddTaskButton.Visibility = (e.Mode == TaskMode.Closed) ? Visibility.Visible : Visibility.Collapsed;
 		}
@@ -385,6 +396,7 @@ namespace Stutter.Windows
 		private void StutterMainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
 		{
 			StutterIO.SaveTaskListToXML(Tasks, Settings.Default.LastTaskListFilename);
+			Settings.Default.Save();
 
 			// TODO: If the phrase is more than half over, update the phrase points for the current task.
 		}
