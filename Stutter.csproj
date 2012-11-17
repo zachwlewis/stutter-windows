@@ -179,6 +179,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Core\StutterIO.cs" />
+    <Compile Include="Windows\Commands\StutterCommand.cs" />
     <Compile Include="Windows\Events\TaskMode.cs" />
     <Compile Include="Windows\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>

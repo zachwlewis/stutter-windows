@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Deployment.Application;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Stutter.Core;
 using Stutter.Core.Events;
 using Stutter.Properties;
-using System.Windows.Controls;
-using System.Deployment.Application;
 using Stutter.Windows.Events;
 
 namespace Stutter.Windows
@@ -21,7 +21,7 @@ namespace Stutter.Windows
 		/// </summary>
 		public StutterIteration Iteration;
 
-		private TaskModeManager _tmm;
+		private TaskModeManager _tmm = new TaskModeManager(TaskMode.Closed);
 
 		/// <summary>
 		/// The user's task list.
@@ -56,7 +56,6 @@ namespace Stutter.Windows
 			// TODO: Is this the best way to update this value?
 			IsTaskListVisible = IsTaskListVisible;
 
-			_tmm = new TaskModeManager(TaskMode.Closed);
 			_tmm.Changed += TaskMode_Changed;
 
 			Randomizer = new Random();
@@ -291,7 +290,22 @@ namespace Stutter.Windows
 				default:
 					break;
 			}
+
+			CancelTaskButton.Visibility = (e.Mode != TaskMode.Closed) ? Visibility.Visible : Visibility.Collapsed;
+			AddTaskButton.Visibility = (e.Mode == TaskMode.Closed) ? Visibility.Visible : Visibility.Collapsed;
 		}
+
+		#endregion
+
+		#region Commands
+
+		private void AddTaskCommand_Executed(object sender, ExecutedRoutedEventArgs e) { _tmm.Mode = TaskMode.Create; }
+
+		private void AddTaskCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = (_tmm.Mode == TaskMode.Closed); }
+
+		private void CloseTaskCommand_Executed(object sender, ExecutedRoutedEventArgs e) { _tmm.Mode = TaskMode.Closed; }
+
+		private void CloseTaskCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e) { e.CanExecute = (_tmm.Mode != TaskMode.Closed); }
 
 		#endregion
 
@@ -323,8 +337,6 @@ namespace Stutter.Windows
 		private void Iteration_Complete(object sender, StutterTimerEvent e)
 		{
 			PhraseProgressBar.Value = PhraseProgressBar.Maximum;
-
-			System.Media.SoundPlayer player;
 
 			switch (e.State)
 			{
@@ -431,6 +443,5 @@ namespace Stutter.Windows
 		#endregion
 
 		#endregion
-
 	}
 }
