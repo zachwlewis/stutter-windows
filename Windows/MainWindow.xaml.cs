@@ -71,8 +71,8 @@ namespace Stutter.Windows
 			set
 			{
 				_doesHideOnMinimize = value;
-				if (value) { MinimizeToTray.Enable(this); }
-				else { MinimizeToTray.Disable(this); }
+				if (value) { NotificationHelper.Enable(this); }
+				else { NotificationHelper.Disable(this); }
 			}
 		}
 
@@ -184,6 +184,8 @@ namespace Stutter.Windows
 			RefreshGoal();
 			PhraseProgressLabel.Content = Iteration.Duration.ToString(@"mm\:ss") + " Remaining";
 			BeginButton.Content = "Stop Stutter";
+
+			NotificationHelper.CreateNotificiation(this, Iteration.Task.Name, "Phrase Started");
 		}
 
 		void EndIteration()
@@ -203,6 +205,43 @@ namespace Stutter.Windows
 			Iteration.Tick -= Iteration_Tick;
 			Iteration = null;
 			BeginIteration();
+		}
+
+		private void Iteration_Tick(object sender, StutterTimerEvent e)
+		{
+			PhraseProgressBar.Value = PhraseProgressBar.Maximum * (e.Elapsed.TotalSeconds / e.Total.TotalSeconds);
+			PhraseProgressLabel.Content = e.State.ToString() + " — " + e.Total.Subtract(e.Elapsed).ToString(@"mm\:ss") + " Remaining";
+		}
+
+		private void Iteration_Complete(object sender, StutterTimerEvent e)
+		{
+			PhraseProgressBar.Value = PhraseProgressBar.Maximum;
+
+			switch (e.State)
+			{
+				case StutterTimedState.Block:
+					// Handle iteration completion.
+					PhraseProgressLabel.Content = "Iteration Complete";
+					TryPlaySound(Properties.Resources.StartWork);
+
+					StartNextIteration();
+					break;
+				case StutterTimedState.Phrase:
+					// Handle phrase completion.
+					// TODO: Reverse fill direction and stuff.
+					TryPlaySound(Properties.Resources.StopWork);
+
+					if (e.Task != null) { e.Task.ActualPoints++; }
+
+					Iteration.BeginBlock();
+
+					NotificationHelper.CreateNotificiation(this, "The current phrase has ended. Take a short break — you've earned it!", "Phrase Ended");
+					break;
+				default:
+					break;
+			}
+
+			RefreshGoal();
 		}
 
 		#endregion
@@ -381,41 +420,6 @@ namespace Stutter.Windows
 		{
 			if (Iteration != null && Iteration.Running) { EndIteration(); }
 			else { BeginIteration(); }
-		}
-
-		private void Iteration_Tick(object sender, StutterTimerEvent e)
-		{
-			PhraseProgressBar.Value = PhraseProgressBar.Maximum * (e.Elapsed.TotalSeconds / e.Total.TotalSeconds);
-			PhraseProgressLabel.Content = e.State.ToString() + " — " + e.Total.Subtract(e.Elapsed).ToString(@"mm\:ss") + " Remaining";
-		}
-
-		private void Iteration_Complete(object sender, StutterTimerEvent e)
-		{
-			PhraseProgressBar.Value = PhraseProgressBar.Maximum;
-
-			switch (e.State)
-			{
-				case StutterTimedState.Block:
-					// Handle iteration completion.
-					PhraseProgressLabel.Content = "Iteration Complete";
-					TryPlaySound(Properties.Resources.StartWork);
-
-					StartNextIteration();
-					break;
-				case StutterTimedState.Phrase:
-					// Handle phrase completion.
-					// TODO: Reverse fill direction and stuff.
-					TryPlaySound(Properties.Resources.StopWork);
-
-					if (e.Task != null) { e.Task.ActualPoints++; }
-
-					Iteration.BeginBlock();
-					break;
-				default:
-					break;
-			}
-
-			RefreshGoal();
 		}
 
 		private void TryPlaySound(System.IO.UnmanagedMemoryStream soundResource)

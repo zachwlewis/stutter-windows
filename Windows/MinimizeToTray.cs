@@ -10,7 +10,7 @@ namespace Stutter.Windows
 	/// <summary>
 	/// Class implementing support for "minimize to tray" functionality.
 	/// </summary>
-	public static class MinimizeToTray
+	public static class NotificationHelper
 	{
 		/// <summary>
 		/// Enables "minimize to tray" behavior for the specified Window.
@@ -18,17 +18,11 @@ namespace Stutter.Windows
 		/// <param name="window">Window to enable the behavior for.</param>
 		public static void Enable(Window window)
 		{
-			foreach (MinimizeToTrayInstance mi in instances)
+			if (!instances.ContainsKey(window))
 			{
-				if (mi.Target == window)
-				{
-					// The window already exists. Don't add it.
-					return;
-				}
+				// The search completed without finding the window. Add it.
+				instances.Add(window, new MinimizeToTrayInstance(window));
 			}
-
-			// The search completed without finding the window. Add it.
-			instances.Add(new MinimizeToTrayInstance(window));
 		}
 
 		/// <summary>
@@ -37,27 +31,23 @@ namespace Stutter.Windows
 		/// <param name="window">Window to enable the behavior for.</param>
 		public static void Disable(Window window)
 		{
-			MinimizeToTrayInstance match = null;
-			foreach (MinimizeToTrayInstance mi in instances)
+			if(instances.ContainsKey(window))
 			{
-				if (mi.Target == window)
-				{
-					// The window exists in the list.
-					match = mi;
-					break;
-				}
-			}
-
-			// If a match was found, dispose of it.
-			if (match != null) {
-				instances.Remove(match);
+				MinimizeToTrayInstance match = instances[window];
+				instances.Remove(window);
 				match.Dispose();
 			}
-
-
 		}
 
-		private static List<MinimizeToTrayInstance> instances = new List<MinimizeToTrayInstance>();
+		public static void CreateNotificiation(Window window, string message, string title = null)
+		{
+			if (instances.ContainsKey(window))
+			{
+				instances[window].CreateNotification(message);
+			}
+		}
+
+		private static Dictionary<Window,MinimizeToTrayInstance> instances = new Dictionary<Window,MinimizeToTrayInstance>();
 
 		/// <summary>
 		/// Class implementing "minimize to tray" functionality for a Window instance.
@@ -77,6 +67,15 @@ namespace Stutter.Windows
 			{
 				_window = window;
 				_window.StateChanged += new EventHandler(HandleStateChanged);
+			}
+
+			public void CreateNotification(string message, string title = null)
+			{
+				// TODO: Support showing notifications even if the app isn't minimized.
+				if (_notifyIcon != null && _notifyIcon.Visible)
+				{
+					_notifyIcon.ShowBalloonTip(1000, title, message, ToolTipIcon.Info);
+				}
 			}
 
 			public void Dispose()
@@ -110,7 +109,7 @@ namespace Stutter.Windows
 				if (minimized && !_balloonShown)
 				{
 					// If this is the first time minimizing to the tray, show the user what happened
-					_notifyIcon.ShowBalloonTip(1000, null, _window.Title, ToolTipIcon.None);
+					_notifyIcon.ShowBalloonTip(1000, null, _window.Title + " has been minimized to the notification area.", ToolTipIcon.None);
 					_balloonShown = true;
 				}
 			}
