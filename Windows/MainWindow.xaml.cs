@@ -176,13 +176,26 @@ namespace Stutter.Windows
 				return;
 			}
 
+			// Set up variables for the new Iteration
 			StutterTask task = temp[_random.Next(temp.Count)];
-			Iteration = new StutterIteration(task);
+			TimeSpan phraseLength = new TimeSpan(0, Settings.Default.PhraseLength, 0);
+			TimeSpan blockLength = new TimeSpan(0, Settings.Default.BlockLength, 0);
+
+#if DEBUG
+
+			// Shorter iterations for debugging purposes.
+			phraseLength = new TimeSpan(0,0,10);
+			blockLength = new TimeSpan(0,0,5);
+			
+#endif
+
+			// Create the Iteration.
+			Iteration = new StutterIteration(task, phraseLength, blockLength);
 			Iteration.Complete += Iteration_Complete;
 			Iteration.Tick += Iteration_Tick;
 			Iteration.BeginPhrase();
 			RefreshGoal();
-			PhraseProgressLabel.Content = Iteration.Duration.ToString(@"mm\:ss") + " Remaining";
+			PhraseProgressLabel.Content = Iteration.PhraseLength.ToString(@"mm\:ss") + " Remaining";
 			BeginButton.Content = "Stop Stutter";
 
 			NotificationHelper.CreateNotificiation(this, Iteration.Task.Name, "Phrase Started");

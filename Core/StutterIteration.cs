@@ -24,7 +24,12 @@ namespace Stutter.Core
 		/// <summary>
 		/// The length of the phrase.
 		/// </summary>
-		public TimeSpan Duration { get; protected set; }
+		public TimeSpan PhraseLength;
+
+		/// <summary>
+		/// The length of the block.
+		/// </summary>
+		public TimeSpan BlockLength;
 
 		/// <summary>
 		/// Is the phrase currently running?
@@ -60,9 +65,12 @@ namespace Stutter.Core
 		/// </summary>
 		public StutterTimedState IterationState;
 
-		public StutterIteration(StutterTask task)
+		public StutterIteration(StutterTask task, TimeSpan phraseLength, TimeSpan blockLength)
 		{
 			Task = task;
+			PhraseLength = phraseLength;
+			BlockLength = blockLength;
+
 			CreateTimer();
 		}
 
@@ -75,7 +83,7 @@ namespace Stutter.Core
 			IterationState = StutterTimedState.Phrase;
 			
 			// Start the timer.
-			StartTimer(new TimeSpan(0, Settings.Default.PhraseLength, 0));
+			StartTimer(PhraseLength);
 		}
 
 		/// <summary>
@@ -87,7 +95,7 @@ namespace Stutter.Core
 			IterationState = StutterTimedState.Block;
 
 			// Start the timer.
-			StartTimer(new TimeSpan(0, Settings.Default.BlockLength, 0));
+			StartTimer(BlockLength);
 
 		}
 
@@ -109,7 +117,7 @@ namespace Stutter.Core
 			// Update the total elapsed time.
 			elapsedTime = DateTime.UtcNow - startTime;
 
-			if (elapsedTime > Duration)
+			if (elapsedTime > PhraseLength)
 			{
 				// The timer has completed.
 				
@@ -130,8 +138,8 @@ namespace Stutter.Core
 
 		#region Raised Events
 
-		private void RaiseCompleteEvent() { Complete(this, new StutterTimerEvent(Task, elapsedTime, Duration, IterationState)); }
-		private void RaiseTickEvent() { Tick(this, new StutterTimerEvent(Task, elapsedTime, Duration, IterationState)); }
+		private void RaiseCompleteEvent() { Complete(this, new StutterTimerEvent(Task, elapsedTime, PhraseLength, IterationState)); }
+		private void RaiseTickEvent() { Tick(this, new StutterTimerEvent(Task, elapsedTime, PhraseLength, IterationState)); }
 
 		#endregion
 
@@ -161,7 +169,7 @@ namespace Stutter.Core
 			{
 				startTime = DateTime.UtcNow;
 				elapsedTime = new TimeSpan(0);
-				Duration = timerDuration;
+				PhraseLength = timerDuration;
 				Timer.Start();
 			}
 		}
