@@ -86,8 +86,6 @@ namespace Stutter.Core
 			Timer.IsEnabled = false;
 		}
 
-		
-
 		#region Timer Events
 
 		void Timer_Tick(object sender, EventArgs e)
@@ -117,15 +115,14 @@ namespace Stutter.Core
 		#region Raised Events
 
 		private void RaiseCompleteEvent() { Complete(this, new StutterTimerEvent(Task, elapsedTime, PhraseLength, IterationState)); }
+
 		private void RaiseTickEvent() { Tick(this, new StutterTimerEvent(Task, elapsedTime, PhraseLength, IterationState)); }
 
 		#endregion
 
 		#region Class Functions
 
-		/// <summary>
-		/// Creates a timer and adds event handlers.
-		/// </summary>
+		/// <summary>Creates a timer and adds event handlers.</summary>
 		private void CreateTimer()
 		{
 			// Initialize the timer.
@@ -136,9 +133,7 @@ namespace Stutter.Core
 			Timer.Tick += Timer_Tick;
 		}
 
-		/// <summary>
-		/// Start or restart the timer.
-		/// </summary>
+		/// <summary>Start or restart the timer.</summary>
 		/// <param name="timerDuration">The length the timer should run.</param>
 		/// <param name="forceReset">Should the timer be restarted if already running?</param>
 		private void StartTimer(TimeSpan timerDuration, bool forceReset = false)

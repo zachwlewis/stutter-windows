@@ -102,13 +102,13 @@ namespace Stutter.Windows
 			DoesHideOnMinimize = Settings.Default.DoesHideOnMinimize;
 		}
 
-		void SettingsLoaded(object sender, System.Configuration.SettingsLoadedEventArgs e)
+		private void SettingsLoaded(object sender, System.Configuration.SettingsLoadedEventArgs e)
 		{
 			// Update anything based on our new settings.
 			DoesHideOnMinimize = Settings.Default.DoesHideOnMinimize;
 		}
 
-		void SettingsSaving(object sender, CancelEventArgs e)
+		private void SettingsSaving(object sender, CancelEventArgs e)
 		{
 			// Update anything based on our new settings.
 			DoesHideOnMinimize = Settings.Default.DoesHideOnMinimize;
@@ -152,7 +152,7 @@ namespace Stutter.Windows
 
 		#region Iteration Handling
 
-		void BeginIteration()
+		private void BeginIteration()
 		{
 			if (!TaskListBox.HasItems)
 			{
@@ -202,7 +202,7 @@ namespace Stutter.Windows
 			NotificationHelper.CreateNotificiation(this, Iteration.Task.Name, "Phrase Started");
 		}
 
-		void EndIteration()
+		private void EndIteration()
 		{
 			Iteration.Stop();
 			Iteration.Complete -= Iteration_Complete;
@@ -217,7 +217,7 @@ namespace Stutter.Windows
 			TaskbarItemInfo.ProgressValue = 0.0;
 		}
 
-		void StartNextIteration()
+		private void StartNextIteration()
 		{
 			Iteration.Complete -= Iteration_Complete;
 			Iteration.Tick -= Iteration_Tick;
@@ -228,6 +228,7 @@ namespace Stutter.Windows
 		private void Iteration_Tick(object sender, StutterTimerEvent e)
 		{
 			double progressRatio = e.Elapsed.TotalSeconds / e.Total.TotalSeconds;
+
 			// Update the progress bar in the application.
 			PhraseProgressBar.Value = PhraseProgressBar.Maximum * progressRatio;
 
@@ -258,11 +259,14 @@ namespace Stutter.Windows
 					// TODO: Reverse fill direction and stuff.
 					TryPlaySound(Properties.Resources.StopWork);
 
-					if (e.Task != null) { e.Task.ActualPoints++; }
-
 					Iteration.BeginBlock();
 
-					NotificationHelper.CreateNotificiation(this, "The current phrase has ended. Take a short break — you've earned it!", "Phrase Ended");
+					// Display a visual alert if the user has hidden the application.
+					NotificationHelper.CreateNotificiation(this, "The current phrase has ended. Take a short break.", "Phrase Ended");
+
+					// Update the task list with new values.
+					RefreshTaskList();
+
 					break;
 				default:
 					break;
