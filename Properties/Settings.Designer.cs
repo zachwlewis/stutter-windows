@@ -157,5 +157,15 @@ namespace Stutter.Properties {
                 this["AreCompletedTasksVisible"] = value;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://docs.google.com/a/stutterapp.com/spreadsheet/viewform?pli=1&formkey=dEdnR" +
+            "EpPXzJPNXdIYzdyMnJ6ZU1adlE6MQ")]
+        public string BUG_REPORT_URI {
+            get {
+                return ((string)(this["BUG_REPORT_URI"]));
+            }
+        }
     }
 }

@@ -66,6 +66,7 @@ namespace Stutter.Core
 			}
 		}
 
+		/// <summary>Is the progress of the task visible?</summary>
 		public Visibility IsProgressVisible
 		{
 			get
@@ -79,14 +80,12 @@ namespace Stutter.Core
 			}
 		}
 
-		public Brush IsCompleteBrush
-		{
-			get
-			{
-				return IsComplete ? new SolidColorBrush(Colors.PaleGoldenrod) : null;
-			}
-		}
-
+		/// <summary>Default constructor for a StutterTask</summary>
+		/// <param name="name">The name of a task.</param>
+		/// <param name="description">A detailed description of a task.</param>
+		/// <param name="estimatedPoints">The estimated value of the task.</param>
+		/// <param name="actualPoints">The actual value of the task.</param>
+		/// <param name="isComplete">Is the task completed?</param>
 		public StutterTask(string name, string description = "", uint estimatedPoints = 0, uint actualPoints = 0, bool isComplete = false)
 		{
 			Name = name;
@@ -96,6 +95,7 @@ namespace Stutter.Core
 			IsComplete = isComplete;
 		}
 
+		/// <summary>Toggles the completion status of the task.</summary>
 		public void ToggleCompletion()
 		{
 			IsComplete = !IsComplete;

@@ -26,4 +26,22 @@ namespace Stutter.Windows
 			return new NotImplementedException();
 		}
 	}
+
+	/// <summary>Converts from a bool to the visibility of a task based on completion.</summary>
+	public class IsCompleteBoolToTaskVisibilityBoolConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			Nullable<bool> isComplete = value as Nullable<bool>;
+			Nullable<bool> showComplete = parameter as Nullable<bool>;
+			Console.WriteLine("IsComplete: " + isComplete + "\nShowComplete: " + showComplete);
+			if ((isComplete.HasValue && showComplete.HasValue) && showComplete.Value) { return true; }
+			else { return false; }
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			return new NotImplementedException();
+		}
+	}
 }

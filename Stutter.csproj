@@ -28,13 +28,15 @@
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>https://s3.amazonaws.com/thegamestudio/stutter/</InstallUrl>
+    <SupportUrl>http://stutterapp.com</SupportUrl>
+    <ErrorReportUrl>https://docs.google.com/spreadsheet/viewform%3fpli=1&amp;formkey=dEdnREpPXzJPNXdIYzdyMnJ6ZU1adlE6MQ</ErrorReportUrl>
     <TargetCulture>en-US</TargetCulture>
     <ProductName>Stutter</ProductName>
     <PublisherName>The Game Studio</PublisherName>
-    <MinimumRequiredVersion>12.11.16.3</MinimumRequiredVersion>
+    <MinimumRequiredVersion>12.11.22.0</MinimumRequiredVersion>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>4</ApplicationRevision>
-    <ApplicationVersion>12.11.16.%2a</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>12.11.22.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>

@@ -38,5 +38,8 @@
     <Setting Name="AreCompletedTasksVisible" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="BUG_REPORT_URI" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">https://docs.google.com/a/stutterapp.com/spreadsheet/viewform?pli=1&amp;formkey=dEdnREpPXzJPNXdIYzdyMnJ6ZU1adlE6MQ</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

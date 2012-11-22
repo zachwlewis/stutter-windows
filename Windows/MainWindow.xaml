@@ -21,6 +21,7 @@
 	<Window.Resources>
 
 		<local:BoolToTaskListVisibilityConverter x:Key="BoolToTaskListVisibilityConverter" />
+		<local:IsCompleteBoolToTaskVisibilityBoolConverter x:Key="IsCompleteBoolToTaskVisibilityBoolConverter" />
 		
 		 <DataTemplate x:Key="TaskDataTemplate">
 			<StackPanel x:Name="TaskListContainer" Opacity="{Binding IsCompletedAlpha}" Orientation="Vertical" SnapsToDevicePixels="True" MouseDown="TaskListContainer_MouseDown">
@@ -88,7 +89,7 @@
 			</MenuItem>
 			<MenuItem Header="View" Height="24">
 				<MenuItem x:Name="TaskListMenuItem" Header="Task List" IsEnabled="{Binding Path=IsTaskAreaClosed, ElementName=StutterMainWindow}" IsCheckable="True" IsChecked="{Binding Path=IsTaskListVisible, FallbackValue=Settings.Default.IsTaskListVisible, ElementName=StutterMainWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-				<MenuItem x:Name="CompletedTasksMenuItem" Header="Completed Tasks" IsCheckable="True" IsChecked="{Binding Path=AreCompletedTasksVisible, ElementName=StutterMainWindow, FallbackValue=Settings.Default.AreCompletedTasksVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"/>
+				<MenuItem x:Name="CompletedTasksMenuItem" Header="Completed Tasks" IsCheckable="True" IsChecked="{Binding Path=Default.AreCompletedTasksVisible, Source={StaticResource Settings}, UpdateSourceTrigger=PropertyChanged}"/>
 			</MenuItem>
 			<MenuItem Header="Tools" Height="24">
 				<MenuItem Header="Connections..." IsEnabled="False"/>
@@ -96,15 +97,32 @@
 				<MenuItem Header="Settings..." Click="SettingsMenuItem_Click"/>
 			</MenuItem>
 			<MenuItem Header="Help" Height="24">
-				<MenuItem x:Name="UpdateMenuItem" Header="Check For Updates..." Click="UpdateMenuItem_Click"/>
+				<MenuItem x:Name="UpdateMenuItem" Header="Check for updates..." Click="UpdateMenuItem_Click"/>
+				<MenuItem x:Name="ReportBugMenuItem" Header="Report a bug..." Click="ReportBugMenuItem_Click"/>
 				<Separator/>
 				<MenuItem x:Name="AboutMenuItem" Header="About Stutter" Click="AboutMenuItem_Click"/>
 			</MenuItem>
 		</Menu>
 		
 		<StackPanel x:Name="TaskListStackPane" Orientation="Vertical" Grid.Row="1" Width="200" Visibility="{Binding Path=IsTaskListVisible, Converter={StaticResource BoolToTaskListVisibilityConverter}, ElementName=StutterMainWindow}" >
-
-			<ListBox x:Name="TaskListBox" Margin="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top" BorderBrush="#FF707070" BorderThickness="0,0,1,0" ItemTemplate="{DynamicResource TaskDataTemplate}" MinHeight="276" MaxHeight="300"/>
+			<ListBox x:Name="TaskListBox" Margin="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Top" BorderBrush="#FF707070" BorderThickness="0,0,1,0" ItemTemplate="{DynamicResource TaskDataTemplate}" MinHeight="276" MaxHeight="300">
+				<ListBox.ItemContainerStyle>
+					<Style TargetType="{x:Type ListBoxItem}">
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding Path=Default.AreCompletedTasksVisible, Mode=OneWay, Source={StaticResource Settings}}" Value="True">
+								<Setter Property="Visibility" Value="Visible"/>
+							</DataTrigger>
+							<MultiDataTrigger>
+								<MultiDataTrigger.Conditions>
+									<Condition Binding="{Binding Path=IsComplete, Mode=OneWay}" Value="True"/>
+									<Condition Binding="{Binding Path=Default.AreCompletedTasksVisible, Mode=OneWay, Source={StaticResource Settings}}" Value="False" />
+								</MultiDataTrigger.Conditions>
+								<Setter Property="Visibility" Value="Collapsed"/>
+							</MultiDataTrigger>
+						</Style.Triggers>
+					</Style>
+				</ListBox.ItemContainerStyle>
+			</ListBox>
 			<Button x:Name="AddTaskButton" Content="New Task" Margin="0" Padding="0" Command="{x:Static commands:StutterCommand.AddTaskCommand}" BorderThickness="0,1,1,0" Height="26"/>
 			<Button x:Name="CancelTaskButton" Content="Cancel" Margin="0" Padding="0" Command="{x:Static commands:StutterCommand.CloseTaskCommand}" BorderThickness="0,1,1,0" Height="26" Visibility="Collapsed"/>
 		</StackPanel>

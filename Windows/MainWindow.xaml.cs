@@ -21,6 +21,7 @@ namespace Stutter.Windows
 		/// <summary>The iteration manager for the application.</summary>
 		public StutterIteration Iteration;
 
+		/// <summary>A property of the Window has changed.</summary>
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		/// <summary>The user's task list.</summary>
@@ -65,7 +66,7 @@ namespace Stutter.Windows
 		private TaskModeManager _tmm = new TaskModeManager(TaskMode.Closed);
 		private Random _random;
 
-		private bool _doesHideOnMinimize;
+		/// <summary>Does the Window hide when minimized?</summary>
 		public bool DoesHideOnMinimize
 		{
 			get { return _doesHideOnMinimize; }
@@ -76,7 +77,9 @@ namespace Stutter.Windows
 				else { NotificationHelper.Disable(this); }
 			}
 		}
+		private bool _doesHideOnMinimize;
 
+		/// <summary>The default constructor for MainWindow.</summary>
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -532,6 +535,11 @@ namespace Stutter.Windows
 		}
 
 		#endregion
+
+		private void ReportBugMenuItem_Click(object sender, RoutedEventArgs e)
+		{
+			System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(Settings.Default.BUG_REPORT_URI));
+		}
 
 		#endregion
 	}
