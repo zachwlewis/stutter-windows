@@ -9,6 +9,7 @@ using Stutter.Core.Events;
 using Stutter.Properties;
 using Stutter.Windows.Events;
 using System.ComponentModel;
+using System.Windows.Shell;
 
 namespace Stutter.Windows
 {
@@ -210,6 +211,10 @@ namespace Stutter.Windows
 			PhraseProgressBar.Value = 0;
 			BeginButton.Content = "Start Stutter";
 			RefreshGoal();
+
+			// When the user stops the iteration, clear the taskbar progressRatio.
+			TaskbarItemInfo.ProgressState = TaskbarItemProgressState.None;
+			TaskbarItemInfo.ProgressValue = 0.0;
 		}
 
 		void StartNextIteration()
@@ -222,7 +227,16 @@ namespace Stutter.Windows
 
 		private void Iteration_Tick(object sender, StutterTimerEvent e)
 		{
-			PhraseProgressBar.Value = PhraseProgressBar.Maximum * (e.Elapsed.TotalSeconds / e.Total.TotalSeconds);
+			double progressRatio = e.Elapsed.TotalSeconds / e.Total.TotalSeconds;
+			// Update the progress bar in the application.
+			PhraseProgressBar.Value = PhraseProgressBar.Maximum * progressRatio;
+
+			// Update the progress bar in the taskbar. [0-1]
+			// Display green during a phrase and red during a block.
+			TaskbarItemInfo.ProgressState = (e.State == StutterTimedState.Phrase) ? TaskbarItemProgressState.Normal : TaskbarItemProgressState.Error;
+			TaskbarItemInfo.ProgressValue = progressRatio;
+
+			// Update the text string.
 			PhraseProgressLabel.Content = e.State.ToString() + " — " + e.Total.Subtract(e.Elapsed).ToString(@"mm\:ss") + " Remaining";
 		}
 

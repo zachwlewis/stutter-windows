@@ -1,70 +1,54 @@
 ﻿using System;
 using System.Windows.Threading;
 using Stutter.Core.Events;
-using Stutter.Properties;
 
 namespace Stutter.Core
 {
+	/// <summary>The state of the iteration.</summary>
 	public enum StutterTimedState { Phrase, Block };
-	/// <summary>
-	/// An iteration consists of a Iteration and a Block.
-	/// </summary>
+
+	/// <summary>An iteration consists of a Iteration and a Block.</summary>
 	public class StutterIteration
 	{
-		/// <summary>
-		/// The task to work on during the phrase.
-		/// </summary>
+		/// <summary>The task to work on during the phrase.</summary>
 		public StutterTask Task { get; protected set; }
 
-		/// <summary>
-		/// The timer running the phrase.
-		/// </summary>
+		/// <summary>The timer running the phrase.</summary>
 		public DispatcherTimer Timer { get; protected set; }
 
-		/// <summary>
-		/// The length of the phrase.
-		/// </summary>
+		/// <summary>The length of the phrase.</summary>
 		public TimeSpan PhraseLength;
 
-		/// <summary>
-		/// The length of the block.
-		/// </summary>
+		/// <summary>The length of the block.</summary>
 		public TimeSpan BlockLength;
 
-		/// <summary>
-		/// Is the phrase currently running?
-		/// </summary>
+		/// <summary>Is the phrase currently running?</summary>
 		public bool Running
 		{
 			get { return Timer.IsEnabled; }
 			set { Timer.IsEnabled = value; }
 		}
 
-		/// <summary>
-		/// The amount of time elapsed since the phrase has begun.
-		/// </summary>
+		/// <summary>The amount of time elapsed since the phrase has begun.</summary>
 		private TimeSpan elapsedTime;
 
-		/// <summary>
-		/// The time the phrase was started.
-		/// </summary>
+		/// <summary>The time the phrase was started.</summary>
 		private DateTime startTime;
 
-		/// <summary>
-		/// The phrase has completed.
-		/// </summary>
+		/// <summary>The phrase has completed.</summary>
 		public event StutterTimerEventHandler Complete;
 
-		/// <summary>
-		/// The phrase has ticked.
-		/// </summary>
+		/// <summary>The phrase has ticked.</summary>
 		public event StutterTimerEventHandler Tick;
 
-		/// <summary>
-		/// The current state of the iteration.
-		/// </summary>
+		/// <summary>The current state of the iteration.</summary>
 		public StutterTimedState IterationState;
 
+
+		/// <summary>Default constructor for StutterIteration</summary>
+		/// <param name="task">The task to perform during the iteration.</param>
+		/// <param name="phraseLength">The time to spend working.</param>
+		/// <param name="blockLength">The time to spend resting.</param>
 		public StutterIteration(StutterTask task, TimeSpan phraseLength, TimeSpan blockLength)
 		{
 			Task = task;
@@ -74,9 +58,7 @@ namespace Stutter.Core
 			CreateTimer();
 		}
 
-		/// <summary>
-		/// Begins a new phrase.
-		/// </summary>
+		/// <summary>Begins a new phrase.</summary>
 		public void BeginPhrase()
 		{
 			// Set the current state.
@@ -86,9 +68,7 @@ namespace Stutter.Core
 			StartTimer(PhraseLength);
 		}
 
-		/// <summary>
-		/// Begins a new block.
-		/// </summary>
+		/// <summary>Begins a new block.</summary>
 		public void BeginBlock()
 		{
 			// Set the current state.
@@ -99,9 +79,7 @@ namespace Stutter.Core
 
 		}
 
-		/// <summary>
-		/// Stops the Iteration completely.
-		/// </summary>
+		/// <summary>Stops the Iteration completely.</summary>
 		public void Stop()
 		{
 			Timer.Stop();

@@ -14,6 +14,10 @@
     ResizeMode="CanMinimize"
     SizeToContent="WidthAndHeight">
 
+	<Window.TaskbarItemInfo>
+		<TaskbarItemInfo/>
+	</Window.TaskbarItemInfo>
+	
 	<Window.Resources>
 
 		<local:BoolToTaskListVisibilityConverter x:Key="BoolToTaskListVisibilityConverter" />

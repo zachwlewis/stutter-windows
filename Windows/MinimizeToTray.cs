@@ -39,6 +39,12 @@ namespace Stutter.Windows
 			}
 		}
 
+		/// <summary>
+		/// Displays a notification on the notification icon.
+		/// </summary>
+		/// <param name="window">The window sending the notification.</param>
+		/// <param name="message">The message to present.</param>
+		/// <param name="title">The title of the notification.</param>
 		public static void CreateNotificiation(Window window, string message, string title = null)
 		{
 			if (instances.ContainsKey(window))
